@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System;
 
 public enum CameraMode { FirstPerson, ThirdPerson };
-public class CameraManager : MonoBehaviour
+public class CameraManager : Singleton<CameraManager>
 {
     public CameraMode DefaultCameraMode = CameraMode.ThirdPerson;
 
@@ -51,8 +51,10 @@ public class CameraManager : MonoBehaviour
             OnSwitchCam.Invoke(CurrentCameraMode);
     }
 
-    void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+
         foreach (var cam in CamItems)
         {
             m_Cameras.Add(cam.Mode, cam.Cam);

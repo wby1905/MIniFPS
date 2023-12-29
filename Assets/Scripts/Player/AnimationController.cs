@@ -20,7 +20,7 @@ public class AnimationController : MonoBehaviour
         m_Animator = GetComponentInChildren<Animator>();
         m_CharacterController = GetComponent<CharacterController>();
 
-        m_CameraManager = Singleton<CameraManager>.Instance;
+        m_CameraManager = CameraManager.Instance;
         if (m_CameraManager != null)
             m_CameraManager.OnSwitchCam += OnSwitchCam;
 

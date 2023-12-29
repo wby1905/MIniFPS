@@ -25,7 +25,7 @@ public class InputHandler : MonoBehaviour
     {
         m_PlayerControl = new PlayerControl();
         m_CharacterController = GetComponent<CharacterController>();
-        m_CameraManager = Singleton<CameraManager>.Instance;
+        m_CameraManager = CameraManager.Instance;
 
         m_PlayerControl.gameplay.SwitchCam.performed += ctx => SwitchCam();
         m_PlayerControl.gameplay.Jump.performed += ctx => Jump();
