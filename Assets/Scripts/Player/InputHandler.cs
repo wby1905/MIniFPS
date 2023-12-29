@@ -25,7 +25,7 @@ public class InputHandler : MonoBehaviour
     {
         m_PlayerControl = new PlayerControl();
         m_CharacterController = GetComponent<CharacterController>();
-        m_CameraManager = GetComponent<CameraManager>();
+        m_CameraManager = Singleton<CameraManager>.Instance;
 
         m_PlayerControl.gameplay.SwitchCam.performed += ctx => SwitchCam();
         m_PlayerControl.gameplay.Jump.performed += ctx => Jump();
@@ -79,6 +79,7 @@ public class InputHandler : MonoBehaviour
     {
         if (m_CharacterController.isGrounded && m_Velocity.y < 0)
         {
+            // A minor negative velocity to make sure the character is grounded
             m_Velocity.y = -0.05f;
         }
         else

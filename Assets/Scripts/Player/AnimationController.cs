@@ -20,7 +20,7 @@ public class AnimationController : MonoBehaviour
         m_Animator = GetComponentInChildren<Animator>();
         m_CharacterController = GetComponent<CharacterController>();
 
-        m_CameraManager = GetComponent<CameraManager>();
+        m_CameraManager = Singleton<CameraManager>.Instance;
         if (m_CameraManager != null)
             m_CameraManager.OnSwitchCam += OnSwitchCam;
 
@@ -65,7 +65,7 @@ public class AnimationController : MonoBehaviour
 
     void OnLook(Vector2 lookDelta)
     {
-        if (m_CameraManager.CurrentCameraMode == CameraMode.FirstPerson)
+        if (m_CameraManager && m_CameraManager.CurrentCameraMode == CameraMode.FirstPerson)
         {
             FPSModel.transform.Rotate(Vector3.right, -lookDelta.y);
         }

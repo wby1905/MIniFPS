@@ -71,5 +71,5 @@ public class CameraManager : MonoBehaviour
         if (OnSwitchCam != null)
             OnSwitchCam.Invoke(CurrentCameraMode);
     }
-    
+
 }
