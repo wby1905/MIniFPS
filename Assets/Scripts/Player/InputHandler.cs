@@ -1,26 +1,23 @@
 ﻿using UnityEngine;
 using Cinemachine;
+using UnityEngine.Events;
 
 public class InputHandler : MonoBehaviour
 {
 
     public float GroundSpeed = 5f;
 
-    public float LookSpeed = 100f;
+    public float LookSpeed = 200f;
     public float LookPitchLimit = 60f;
+    public UnityAction<Vector2> OnLook;
 
-    public float JumpForce = 5f;
+    public float JumpSpeed = 5f;
 
-
-    public enum CameraMode { FirstPerson, ThirdPerson };
-    private CameraMode m_CameraMode = CameraMode.ThirdPerson;
-    public CinemachineVirtualCamera FirstPerson;
-    public CinemachineVirtualCamera ThirdPerson;
-    private CinemachinePOV m_ThirdPov;
-    private Camera m_MainCamera;
 
     private PlayerControl m_PlayerControl;
     private CharacterController m_CharacterController;
+    private CameraManager m_CameraManager;
+    private CinemachineVirtualCamera curCam;
 
     private Vector3 m_Velocity;
 
@@ -28,9 +25,7 @@ public class InputHandler : MonoBehaviour
     {
         m_PlayerControl = new PlayerControl();
         m_CharacterController = GetComponent<CharacterController>();
-
-        m_MainCamera = Camera.main;
-        m_ThirdPov = ThirdPerson.GetCinemachineComponent<CinemachinePOV>();
+        m_CameraManager = GetComponent<CameraManager>();
 
         m_PlayerControl.gameplay.SwitchCam.performed += ctx => SwitchCam();
         m_PlayerControl.gameplay.Jump.performed += ctx => Jump();
@@ -55,6 +50,11 @@ public class InputHandler : MonoBehaviour
 
     void Update()
     {
+        if (m_CharacterController == null || m_CameraManager == null)
+            return;
+
+        curCam = m_CameraManager.CurrentCamera;
+
         HandleGravity();
         HandleLook();
         HandleMove();
@@ -65,7 +65,11 @@ public class InputHandler : MonoBehaviour
     void HandleMove()
     {
         Vector2 movement = m_PlayerControl.gameplay.Move.ReadValue<Vector2>();
-        Vector3 moveDir = m_MainCamera.transform.forward * movement.y + m_MainCamera.transform.right * movement.x;
+        Vector3 moveDir;
+        if (curCam != null)
+            moveDir = curCam.transform.forward * movement.y + curCam.transform.right * movement.x;
+        else
+            moveDir = transform.forward * movement.y + transform.right * movement.x;
         moveDir.y = 0;
         moveDir.Normalize();
         m_Velocity = moveDir * GroundSpeed + m_Velocity.y * Vector3.up;
@@ -86,51 +90,46 @@ public class InputHandler : MonoBehaviour
     void HandleLook()
     {
         Vector2 look = m_PlayerControl.gameplay.Look.ReadValue<Vector2>().normalized;
-        if (look.sqrMagnitude < 0.01f)
+        if (look.sqrMagnitude < 0.01f || curCam == null)
             return;
+        var camMode = m_CameraManager.CurrentCameraMode;
 
-        switch (m_CameraMode)
+        look *= LookSpeed * Time.deltaTime;
+
+        switch (camMode)
         {
             case CameraMode.FirstPerson:
-                if (FirstPerson == null) return;
-                transform.Rotate(0, look.x * LookSpeed * Time.deltaTime, 0);
-                var curPitch = FirstPerson.transform.eulerAngles.x;
+                transform.Rotate(0, look.x, 0);
+                var curPitch = curCam.transform.eulerAngles.x;
                 if (curPitch > 180f) curPitch -= 360f;
                 if (curPitch < -180f) curPitch += 360f;
-                var deltaPitch = -look.y * LookSpeed * Time.deltaTime;
+                var deltaPitch = -look.y;
                 if (curPitch + deltaPitch < -LookPitchLimit || curPitch + deltaPitch > LookPitchLimit)
                     return;
-                FirstPerson.transform.Rotate(-look.y * LookSpeed * Time.deltaTime, 0, 0);
+                curCam.transform.Rotate(-look.y, 0, 0);
                 break;
+
             case CameraMode.ThirdPerson:
-                if (m_ThirdPov == null) return;
-                m_ThirdPov.m_HorizontalAxis.Value += look.x * LookSpeed * Time.deltaTime;
-                m_ThirdPov.m_VerticalAxis.Value += look.y * LookSpeed * Time.deltaTime;
+                var pov = curCam.GetCinemachineComponent<CinemachinePOV>();
+                if (pov == null) return;
+                pov.m_HorizontalAxis.Value += look.x;
+                pov.m_VerticalAxis.Value += -look.y;
                 break;
         }
 
+        if (OnLook != null)
+            OnLook.Invoke(look);
     }
 
     void Jump()
     {
         if (!m_CharacterController.isGrounded)
             return;
-        m_Velocity.y = JumpForce;
+        m_Velocity.y = JumpSpeed;
     }
 
     void SwitchCam()
     {
-        if (m_CameraMode == CameraMode.ThirdPerson)
-        {
-            m_CameraMode = CameraMode.FirstPerson;
-            FirstPerson.Priority = 10;
-            ThirdPerson.Priority = 0;
-        }
-        else
-        {
-            m_CameraMode = CameraMode.ThirdPerson;
-            FirstPerson.Priority = 0;
-            ThirdPerson.Priority = 10;
-        }
+        m_CameraManager.SwitchCam();
     }
 }
