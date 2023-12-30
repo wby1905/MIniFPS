@@ -8,24 +8,16 @@ public class PlayerInventory : Inventory
     public Transform FPS_WeaponSocket;
     public Transform TPS_WeaponSocket;
 
-    private InputHandler m_InputHandler;
-    private CameraManager m_CameraManager;
 
     protected override void Awake()
     {
         base.Awake();
         MaxWeaponCount = Mathf.Max(MaxWeaponCount, InitialWeapons.Count);
-        m_InputHandler = GetComponent<InputHandler>();
 
-        m_CameraManager = CameraManager.Instance;
-        if (m_CameraManager != null)
-            m_CameraManager.OnSwitchCam += OnSwitchCam;
+        var cameraManager = CameraManager.Instance;
+        if (cameraManager != null)
+            cameraManager.OnSwitchCam += OnSwitchCam;
 
-        if (m_InputHandler != null)
-        {
-            m_InputHandler.OnSwitchPrev += () => EquipWeapon(m_CurIdx - 1);
-            m_InputHandler.OnSwitchNext += () => EquipWeapon(m_CurIdx + 1);
-        }
     }
 
     protected override void Start()

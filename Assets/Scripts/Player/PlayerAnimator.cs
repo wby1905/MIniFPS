@@ -1,19 +1,23 @@
 ﻿using UnityEngine;
 
-public class AnimationController : MonoBehaviour
+public class PlayerAnimator : MonoBehaviour
 {
 
     private Animator m_Animator;
     private CharacterController m_CharacterController;
-    private CameraManager m_CameraManager;
-    private InputHandler m_InputHandler;
+
+    private int m_IsHolsterHash = Animator.StringToHash("IsHolster");
+    /*
+    * TPS specific animator parameters
+    */
+    private int m_VelocityXHash = Animator.StringToHash("VelocityX");
+    private int m_VelocityZHash = Animator.StringToHash("VelocityZ");
+    private int m_IsGroundedHash = Animator.StringToHash("IsGrounded");
 
     /*
-    * TPS animator parameters
+    * FPS specific animator parameters
     */
-    private int m_VelocityX = Animator.StringToHash("VelocityX");
-    private int m_VelocityZ = Animator.StringToHash("VelocityZ");
-    private int m_IsGrounded = Animator.StringToHash("IsGrounded");
+    private int m_VelocityHash = Animator.StringToHash("Velocity");
 
     private CameraMode m_CurCamMode;
     public GameObject FPSModel;
@@ -24,13 +28,13 @@ public class AnimationController : MonoBehaviour
         m_Animator = GetComponentInChildren<Animator>();
         m_CharacterController = GetComponent<CharacterController>();
 
-        m_CameraManager = CameraManager.Instance;
-        if (m_CameraManager != null)
-            m_CameraManager.OnSwitchCam += OnSwitchCam;
+        var cameraManager = CameraManager.Instance;
+        if (cameraManager != null)
+            cameraManager.OnSwitchCam += OnSwitchCam;
 
-        m_InputHandler = GetComponent<InputHandler>();
-        if (m_InputHandler != null)
-            m_InputHandler.OnLook += OnLook;
+        var inputHandler = GetComponent<InputHandler>();
+        if (inputHandler != null)
+            inputHandler.OnLook += OnLook;
     }
 
     void Start()
@@ -46,29 +50,32 @@ public class AnimationController : MonoBehaviour
         switch (m_CurCamMode)
         {
             case CameraMode.FirstPerson:
-                HandleFPS();
+                HandleFPSMovement();
                 break;
             case CameraMode.ThirdPerson:
-                HandleTPS();
+                HandleTPSMovement();
                 break;
         }
 
     }
 
-    private void HandleFPS()
+    private void HandleFPSMovement()
     {
+        var velocity = m_CharacterController.velocity;
 
+        m_Animator.SetFloat(m_VelocityHash, velocity.magnitude);
     }
 
-    private void HandleTPS()
+    private void HandleTPSMovement()
     {
         var velocity = m_CharacterController.velocity;
         var VelocityX = Vector3.Dot(velocity, transform.right);
         var VelocityZ = Vector3.Dot(velocity, transform.forward);
 
-        m_Animator.SetFloat(m_VelocityX, VelocityX);
-        m_Animator.SetFloat(m_VelocityZ, VelocityZ);
-        m_Animator.SetBool(m_IsGrounded, m_CharacterController.isGrounded);
+        m_Animator.SetFloat(m_VelocityXHash, VelocityX);
+        m_Animator.SetFloat(m_VelocityZHash, VelocityZ);
+        m_Animator.SetBool(m_IsGroundedHash, m_CharacterController.isGrounded);
+
     }
 
     void OnSwitchCam(CameraMode mode)
@@ -92,10 +99,16 @@ public class AnimationController : MonoBehaviour
 
     void OnLook(Vector2 lookDelta)
     {
-        if (m_CameraManager && m_CameraManager.CurrentCameraMode == CameraMode.FirstPerson)
+        if (m_CurCamMode == CameraMode.FirstPerson)
         {
             FPSModel.transform.Rotate(Vector3.right, -lookDelta.y);
         }
 
     }
+
+    public void SetHolster(bool isHolster)
+    {
+        m_Animator.SetBool(m_IsHolsterHash, isHolster);
+    }
+
 }
