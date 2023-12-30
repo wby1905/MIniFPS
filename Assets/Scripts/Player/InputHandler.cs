@@ -17,7 +17,7 @@ public class InputHandler : MonoBehaviour
     private PlayerControl m_PlayerControl;
     private CharacterController m_CharacterController;
     private CameraManager m_CameraManager;
-    private CinemachineVirtualCamera curCam;
+    private CinemachineVirtualCamera m_CurCam;
 
     private Vector3 m_Velocity;
 
@@ -29,6 +29,7 @@ public class InputHandler : MonoBehaviour
 
         m_PlayerControl.gameplay.SwitchCam.performed += ctx => SwitchCam();
         m_PlayerControl.gameplay.Jump.performed += ctx => Jump();
+
     }
 
     void OnEnable()
@@ -46,14 +47,14 @@ public class InputHandler : MonoBehaviour
         // Hide the cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        m_CurCam = m_CameraManager.CurrentCamera;
     }
 
     void Update()
     {
         if (m_CharacterController == null || m_CameraManager == null)
             return;
-
-        curCam = m_CameraManager.CurrentCamera;
 
         HandleGravity();
         HandleLook();
@@ -66,8 +67,8 @@ public class InputHandler : MonoBehaviour
     {
         Vector2 movement = m_PlayerControl.gameplay.Move.ReadValue<Vector2>();
         Vector3 moveDir;
-        if (curCam != null)
-            moveDir = curCam.transform.forward * movement.y + curCam.transform.right * movement.x;
+        if (m_CurCam != null)
+            moveDir = m_CurCam.transform.forward * movement.y + m_CurCam.transform.right * movement.x;
         else
             moveDir = transform.forward * movement.y + transform.right * movement.x;
         moveDir.y = 0;
@@ -91,7 +92,7 @@ public class InputHandler : MonoBehaviour
     void HandleLook()
     {
         Vector2 look = m_PlayerControl.gameplay.Look.ReadValue<Vector2>().normalized;
-        if (look.sqrMagnitude < 0.01f || curCam == null)
+        if (look.sqrMagnitude < 0.01f || m_CurCam == null)
             return;
         var camMode = m_CameraManager.CurrentCameraMode;
 
@@ -101,17 +102,17 @@ public class InputHandler : MonoBehaviour
         {
             case CameraMode.FirstPerson:
                 transform.Rotate(0, look.x, 0);
-                var curPitch = curCam.transform.eulerAngles.x;
+                var curPitch = m_CurCam.transform.eulerAngles.x;
                 if (curPitch > 180f) curPitch -= 360f;
                 if (curPitch < -180f) curPitch += 360f;
                 var deltaPitch = -look.y;
                 if (curPitch + deltaPitch < -LookPitchLimit || curPitch + deltaPitch > LookPitchLimit)
                     return;
-                curCam.transform.Rotate(-look.y, 0, 0);
+                m_CurCam.transform.Rotate(-look.y, 0, 0);
                 break;
 
             case CameraMode.ThirdPerson:
-                var pov = curCam.GetCinemachineComponent<CinemachinePOV>();
+                var pov = m_CurCam.GetCinemachineComponent<CinemachinePOV>();
                 if (pov == null) return;
                 pov.m_HorizontalAxis.Value += look.x;
                 pov.m_VerticalAxis.Value += -look.y;
@@ -132,5 +133,6 @@ public class InputHandler : MonoBehaviour
     void SwitchCam()
     {
         m_CameraManager.SwitchCam();
+        m_CurCam = m_CameraManager.CurrentCamera;
     }
 }

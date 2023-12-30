@@ -67,7 +67,7 @@ public class CameraManager : Singleton<CameraManager>
         }
     }
 
-    void Start()
+    protected void Start()
     {
         // initial switch to default camera mode
         if (OnSwitchCam != null)

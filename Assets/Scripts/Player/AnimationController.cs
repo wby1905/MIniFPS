@@ -8,10 +8,14 @@ public class AnimationController : MonoBehaviour
     private CameraManager m_CameraManager;
     private InputHandler m_InputHandler;
 
+    /*
+    * TPS animator parameters
+    */
     private int m_VelocityX = Animator.StringToHash("VelocityX");
     private int m_VelocityZ = Animator.StringToHash("VelocityZ");
     private int m_IsGrounded = Animator.StringToHash("IsGrounded");
 
+    private CameraMode m_CurCamMode;
     public GameObject FPSModel;
     public GameObject TPSModel;
 
@@ -29,12 +33,37 @@ public class AnimationController : MonoBehaviour
             m_InputHandler.OnLook += OnLook;
     }
 
+    void Start()
+    {
+        if (m_CameraManager != null)
+            OnSwitchCam(m_CameraManager.CurrentCameraMode); // in case cameramanager is not invoked.
+    }
+
 
     void Update()
     {
         if (m_CharacterController == null || m_Animator == null)
             return;
 
+        switch (m_CurCamMode)
+        {
+            case CameraMode.FirstPerson:
+                HandleFPS();
+                break;
+            case CameraMode.ThirdPerson:
+                HandleTPS();
+                break;
+        }
+
+    }
+
+    private void HandleFPS()
+    {
+
+    }
+
+    private void HandleTPS()
+    {
         var velocity = m_CharacterController.velocity;
         var VelocityX = Vector3.Dot(velocity, transform.right);
         var VelocityZ = Vector3.Dot(velocity, transform.forward);
@@ -42,7 +71,6 @@ public class AnimationController : MonoBehaviour
         m_Animator.SetFloat(m_VelocityX, VelocityX);
         m_Animator.SetFloat(m_VelocityZ, VelocityZ);
         m_Animator.SetBool(m_IsGrounded, m_CharacterController.isGrounded);
-
     }
 
     void OnSwitchCam(CameraMode mode)
@@ -61,6 +89,7 @@ public class AnimationController : MonoBehaviour
                 break;
         }
 
+        m_CurCamMode = mode;
     }
 
     void OnLook(Vector2 lookDelta)

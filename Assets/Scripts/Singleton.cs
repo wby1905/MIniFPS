@@ -26,10 +26,6 @@ public class Singleton<T> : MonoBehaviour where T : Singleton<T>
         {
             m_Instance = this as T;
         }
-        else
-        {
-            Destroy(gameObject);
-        }
     }
 
     protected virtual void OnDestroy()
