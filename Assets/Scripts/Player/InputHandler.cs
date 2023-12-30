@@ -12,9 +12,6 @@ public class InputHandler : MonoBehaviour
 
     public float JumpSpeed = 5f;
 
-    public float ScrollSwitchCoolDown = 0.25f;
-    private float m_ScrollSwitchTimer = 0f;
-
     public UnityAction<Vector2> OnLook;
     public UnityAction OnSwitchPrev;
     public UnityAction OnSwitchNext;
@@ -60,9 +57,6 @@ public class InputHandler : MonoBehaviour
 
     void Update()
     {
-        if (m_ScrollSwitchTimer > 0)
-            m_ScrollSwitchTimer -= Time.deltaTime;
-
         if (m_CharacterController == null || m_CameraManager == null)
             return;
 
@@ -148,7 +142,7 @@ public class InputHandler : MonoBehaviour
 
     void Scroll()
     {
-        if (OnSwitchPrev == null || OnSwitchNext == null || m_ScrollSwitchTimer > 0)
+        if (OnSwitchPrev == null || OnSwitchNext == null)
             return;
         var scroll = m_PlayerControl.gameplay.Scroll.ReadValue<float>();
         if (scroll > 0)
@@ -161,13 +155,11 @@ public class InputHandler : MonoBehaviour
     {
         if (OnSwitchPrev != null)
             OnSwitchPrev.Invoke();
-        m_ScrollSwitchTimer = ScrollSwitchCoolDown;
     }
 
     void SwitchNext()
     {
         if (OnSwitchNext != null)
             OnSwitchNext.Invoke();
-        m_ScrollSwitchTimer = ScrollSwitchCoolDown;
     }
 }

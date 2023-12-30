@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour
 
     private bool m_IsHolster = false;
     private int m_WeaponIdx = 0;
+    public float SwitchCoolDown = 0.5f;
+    private float m_SwitchTimer = 0f;
 
 
 
@@ -40,6 +42,12 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    void Update()
+    {
+        if (m_SwitchTimer > 0f)
+            m_SwitchTimer -= Time.deltaTime;
+    }
+
 
     bool IsIdle()
     {
@@ -49,13 +57,14 @@ public class PlayerController : MonoBehaviour
 
     void TrySwitchWeapon(int index)
     {
-        if (m_Inventory == null && !IsIdle())
+        if (m_Inventory == null || !IsIdle() || m_SwitchTimer > 0f)
             return;
 
         CurrentState = PlayerState.Switching;
         m_WeaponIdx = index;
         m_IsHolster = true;
         m_PlayerAnimator.SetHolster(true);
+        m_SwitchTimer = SwitchCoolDown;
     }
 
     void OnHolster()
@@ -77,6 +86,7 @@ public class PlayerController : MonoBehaviour
             CurrentState = PlayerState.Idle;
             m_IsHolster = false;
             m_PlayerAnimator.SetHolster(false);
+            m_SwitchTimer = SwitchCoolDown;
         }
     }
 
