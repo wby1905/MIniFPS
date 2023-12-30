@@ -44,17 +44,17 @@ public class Inventory : MonoBehaviour
         EquipWeapon(StartWeaponIndex);
     }
 
-    public virtual void EquipWeapon(int index)
+    public virtual Weapon EquipWeapon(int index)
     {
         // roll over
         if (index == -1) index = m_Weapons.Count - 1;
         if (index == m_Weapons.Count) index = 0;
 
         if (index < 0 || index >= m_Weapons.Count)
-            return;
+            return null;
 
         if (m_Weapons[index] == null)
-            return;
+            return null;
 
         if (m_CurIdx >= 0 && m_Weapons[m_CurIdx] != null)
             m_Weapons[m_CurIdx].gameObject.SetActive(false);
@@ -62,6 +62,8 @@ public class Inventory : MonoBehaviour
         m_CurIdx = index;
         m_Weapons[index].transform.SetParent(WeaponSocket, false);
         m_Weapons[index].gameObject.SetActive(true);
+
+        return m_Weapons[index];
     }
 
 }
