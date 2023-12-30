@@ -14,7 +14,7 @@ public class Inventory : MonoBehaviour
             return m_Weapons[m_CurIdx];
         }
     }
-    private int m_CurIdx = -1;
+    protected int m_CurIdx = -1;
     public int CurrentWeaponIndex
     {
         get
@@ -25,7 +25,7 @@ public class Inventory : MonoBehaviour
 
     public Transform WeaponSocket;
 
-    private List<Weapon> m_Weapons = new List<Weapon>();
+    protected List<Weapon> m_Weapons = new List<Weapon>();
 
 
     protected virtual void Awake()
@@ -46,7 +46,10 @@ public class Inventory : MonoBehaviour
 
     public virtual void EquipWeapon(int index)
     {
-        // 没有检测相等的情况，因为父socket可能会变
+        // roll over
+        if (index == -1) index = m_Weapons.Count - 1;
+        if (index == m_Weapons.Count) index = 0;
+
         if (index < 0 || index >= m_Weapons.Count)
             return;
 

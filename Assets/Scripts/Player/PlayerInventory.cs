@@ -8,7 +8,6 @@ public class PlayerInventory : Inventory
     public Transform FPS_WeaponSocket;
     public Transform TPS_WeaponSocket;
 
-    private AnimationController m_AnimationController;
     private InputHandler m_InputHandler;
     private CameraManager m_CameraManager;
 
@@ -16,19 +15,22 @@ public class PlayerInventory : Inventory
     {
         base.Awake();
         MaxWeaponCount = Mathf.Max(MaxWeaponCount, InitialWeapons.Count);
-        m_AnimationController = GetComponent<AnimationController>();
         m_InputHandler = GetComponent<InputHandler>();
 
         m_CameraManager = CameraManager.Instance;
         if (m_CameraManager != null)
             m_CameraManager.OnSwitchCam += OnSwitchCam;
+
+        if (m_InputHandler != null)
+        {
+            m_InputHandler.OnSwitchPrev += () => EquipWeapon(m_CurIdx - 1);
+            m_InputHandler.OnSwitchNext += () => EquipWeapon(m_CurIdx + 1);
+        }
     }
 
     protected override void Start()
     {
         base.Start();
-        if (m_CameraManager != null)
-            OnSwitchCam(m_CameraManager.CurrentCameraMode); // in case cameramanager is not invoked.
     }
 
     void OnSwitchCam(CameraMode mode)

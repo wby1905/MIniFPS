@@ -35,8 +35,6 @@ public class AnimationController : MonoBehaviour
 
     void Start()
     {
-        if (m_CameraManager != null)
-            OnSwitchCam(m_CameraManager.CurrentCameraMode); // in case cameramanager is not invoked.
     }
 
 

@@ -62,6 +62,33 @@ public partial class @PlayerControl : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Scroll"",
+                    ""type"": ""Value"",
+                    ""id"": ""b8f6077a-f980-4a55-bb79-3f27937615c7"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""SwitchPrev"",
+                    ""type"": ""Button"",
+                    ""id"": ""7499bab6-8609-46bb-a7e3-3d55415028d8"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SwitchNext"",
+                    ""type"": ""Button"",
+                    ""id"": ""5c438483-cc82-4d87-b9a7-287d6853c64b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -207,6 +234,39 @@ public partial class @PlayerControl : IInputActionCollection2, IDisposable
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""997bc540-4bed-4f73-8d2c-659b48b25168"",
+                    ""path"": ""<Mouse>/scroll/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Scroll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""53e44e1f-9ef9-48d3-9c31-24eed9171a1a"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SwitchPrev"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c904c24d-43c9-4804-84e8-e7f6e3d2700f"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SwitchNext"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -219,6 +279,9 @@ public partial class @PlayerControl : IInputActionCollection2, IDisposable
         m_gameplay_Look = m_gameplay.FindAction("Look", throwIfNotFound: true);
         m_gameplay_SwitchCam = m_gameplay.FindAction("SwitchCam", throwIfNotFound: true);
         m_gameplay_Jump = m_gameplay.FindAction("Jump", throwIfNotFound: true);
+        m_gameplay_Scroll = m_gameplay.FindAction("Scroll", throwIfNotFound: true);
+        m_gameplay_SwitchPrev = m_gameplay.FindAction("SwitchPrev", throwIfNotFound: true);
+        m_gameplay_SwitchNext = m_gameplay.FindAction("SwitchNext", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -282,6 +345,9 @@ public partial class @PlayerControl : IInputActionCollection2, IDisposable
     private readonly InputAction m_gameplay_Look;
     private readonly InputAction m_gameplay_SwitchCam;
     private readonly InputAction m_gameplay_Jump;
+    private readonly InputAction m_gameplay_Scroll;
+    private readonly InputAction m_gameplay_SwitchPrev;
+    private readonly InputAction m_gameplay_SwitchNext;
     public struct GameplayActions
     {
         private @PlayerControl m_Wrapper;
@@ -290,6 +356,9 @@ public partial class @PlayerControl : IInputActionCollection2, IDisposable
         public InputAction @Look => m_Wrapper.m_gameplay_Look;
         public InputAction @SwitchCam => m_Wrapper.m_gameplay_SwitchCam;
         public InputAction @Jump => m_Wrapper.m_gameplay_Jump;
+        public InputAction @Scroll => m_Wrapper.m_gameplay_Scroll;
+        public InputAction @SwitchPrev => m_Wrapper.m_gameplay_SwitchPrev;
+        public InputAction @SwitchNext => m_Wrapper.m_gameplay_SwitchNext;
         public InputActionMap Get() { return m_Wrapper.m_gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -311,6 +380,15 @@ public partial class @PlayerControl : IInputActionCollection2, IDisposable
                 @Jump.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnJump;
                 @Jump.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnJump;
                 @Jump.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnJump;
+                @Scroll.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnScroll;
+                @Scroll.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnScroll;
+                @Scroll.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnScroll;
+                @SwitchPrev.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSwitchPrev;
+                @SwitchPrev.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSwitchPrev;
+                @SwitchPrev.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSwitchPrev;
+                @SwitchNext.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSwitchNext;
+                @SwitchNext.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSwitchNext;
+                @SwitchNext.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSwitchNext;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
@@ -327,6 +405,15 @@ public partial class @PlayerControl : IInputActionCollection2, IDisposable
                 @Jump.started += instance.OnJump;
                 @Jump.performed += instance.OnJump;
                 @Jump.canceled += instance.OnJump;
+                @Scroll.started += instance.OnScroll;
+                @Scroll.performed += instance.OnScroll;
+                @Scroll.canceled += instance.OnScroll;
+                @SwitchPrev.started += instance.OnSwitchPrev;
+                @SwitchPrev.performed += instance.OnSwitchPrev;
+                @SwitchPrev.canceled += instance.OnSwitchPrev;
+                @SwitchNext.started += instance.OnSwitchNext;
+                @SwitchNext.performed += instance.OnSwitchNext;
+                @SwitchNext.canceled += instance.OnSwitchNext;
             }
         }
     }
@@ -337,5 +424,8 @@ public partial class @PlayerControl : IInputActionCollection2, IDisposable
         void OnLook(InputAction.CallbackContext context);
         void OnSwitchCam(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+        void OnScroll(InputAction.CallbackContext context);
+        void OnSwitchPrev(InputAction.CallbackContext context);
+        void OnSwitchNext(InputAction.CallbackContext context);
     }
 }

@@ -9,10 +9,15 @@ public class InputHandler : MonoBehaviour
 
     public float LookSpeed = 200f;
     public float LookPitchLimit = 60f;
-    public UnityAction<Vector2> OnLook;
 
     public float JumpSpeed = 5f;
 
+    public float ScrollSwitchCoolDown = 0.25f;
+    private float m_ScrollSwitchTimer = 0f;
+
+    public UnityAction<Vector2> OnLook;
+    public UnityAction OnSwitchPrev;
+    public UnityAction OnSwitchNext;
 
     private PlayerControl m_PlayerControl;
     private CharacterController m_CharacterController;
@@ -29,7 +34,9 @@ public class InputHandler : MonoBehaviour
 
         m_PlayerControl.gameplay.SwitchCam.performed += ctx => SwitchCam();
         m_PlayerControl.gameplay.Jump.performed += ctx => Jump();
-
+        m_PlayerControl.gameplay.Scroll.performed += ctx => Scroll();
+        m_PlayerControl.gameplay.SwitchPrev.performed += ctx => SwitchPrev();
+        m_PlayerControl.gameplay.SwitchNext.performed += ctx => SwitchNext();
     }
 
     void OnEnable()
@@ -53,6 +60,9 @@ public class InputHandler : MonoBehaviour
 
     void Update()
     {
+        if (m_ScrollSwitchTimer > 0)
+            m_ScrollSwitchTimer -= Time.deltaTime;
+
         if (m_CharacterController == null || m_CameraManager == null)
             return;
 
@@ -134,5 +144,30 @@ public class InputHandler : MonoBehaviour
     {
         m_CameraManager.SwitchCam();
         m_CurCam = m_CameraManager.CurrentCamera;
+    }
+
+    void Scroll()
+    {
+        if (OnSwitchPrev == null || OnSwitchNext == null || m_ScrollSwitchTimer > 0)
+            return;
+        var scroll = m_PlayerControl.gameplay.Scroll.ReadValue<float>();
+        if (scroll > 0)
+            SwitchNext();
+        else if (scroll < 0)
+            SwitchPrev();
+    }
+
+    void SwitchPrev()
+    {
+        if (OnSwitchPrev != null)
+            OnSwitchPrev.Invoke();
+        m_ScrollSwitchTimer = ScrollSwitchCoolDown;
+    }
+
+    void SwitchNext()
+    {
+        if (OnSwitchNext != null)
+            OnSwitchNext.Invoke();
+        m_ScrollSwitchTimer = ScrollSwitchCoolDown;
     }
 }
