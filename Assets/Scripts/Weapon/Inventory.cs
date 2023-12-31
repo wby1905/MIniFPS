@@ -7,6 +7,7 @@ public class Inventory : MonoBehaviour
 
     public List<WeaponType> InitialWeapons;
     public int StartWeaponIndex = 0;
+    public bool IsEquipped => m_CurIdx >= 0;
     public Weapon CurrentWeapon
     {
         get

@@ -13,6 +13,18 @@ public class PlayerController : MonoBehaviour
     public IKHandler FPSIKHandler, TPSIKHandler;
     private IKHandler m_CurIKHandler;
 
+    /**
+    * Raycast
+    */
+    public LayerMask HitLayerMask;
+    public float HitDistance = 1000f;
+    private Camera m_Camera;
+    private RaycastHit m_HitTarget;
+
+
+    /**
+    * Switch weapon
+    */
     private bool m_IsHolster = false;
     private int m_WeaponIdx = 0;
     public float SwitchCoolDown = 0.5f;
@@ -46,16 +58,44 @@ public class PlayerController : MonoBehaviour
 
         var cameraManager = CameraManager.Instance;
         if (cameraManager != null)
+        {
             cameraManager.OnSwitchCam += OnSwitchCam;
+        }
+    }
 
+    void Start()
+    {
+        var cameraManager = CameraManager.Instance;
+        if (cameraManager != null)
+            m_Camera = cameraManager.CurrentCamera;
     }
 
     void Update()
     {
         if (m_SwitchTimer > 0f)
             m_SwitchTimer -= Time.deltaTime;
+
+
+        if (m_Inventory.IsEquipped)
+        {
+            RaycastFromCrosshair();
+            m_PlayerAnimator.AimPoint = m_HitTarget.point;
+        }
+
     }
 
+    void RaycastFromCrosshair()
+    {
+        if (m_Camera == null)
+            return;
+
+        Ray ray = m_Camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+        if (!Physics.Raycast(ray, out m_HitTarget, HitDistance, HitLayerMask))
+        {
+            m_HitTarget.point = ray.GetPoint(HitDistance);
+        }
+
+    }
     void TrySwitchWeapon(int index)
     {
         if (m_Inventory == null || !IsIdle || m_SwitchTimer > 0f)
@@ -124,5 +164,16 @@ public class PlayerController : MonoBehaviour
                 break;
         }
     }
+
+
+
+
+#if UNITY_EDITOR
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(m_HitTarget.point, 0.1f);
+    }
+#endif
 
 }

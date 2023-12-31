@@ -52,7 +52,7 @@ public class InputHandler : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        m_CurCam = m_CameraManager.CurrentCamera;
+        m_CurCam = m_CameraManager.CurrentVirtualCamera;
     }
 
     void Update()
@@ -137,7 +137,7 @@ public class InputHandler : MonoBehaviour
     void SwitchCam()
     {
         m_CameraManager.SwitchCam();
-        m_CurCam = m_CameraManager.CurrentCamera;
+        m_CurCam = m_CameraManager.CurrentVirtualCamera;
     }
 
     void Scroll()

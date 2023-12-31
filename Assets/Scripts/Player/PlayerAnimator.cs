@@ -1,10 +1,18 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class PlayerAnimator : MonoBehaviour
 {
 
     private Animator m_Animator;
     private CharacterController m_CharacterController;
+
+    [SerializeField]
+    private float m_LerpSpeed = 5f;
+    [SerializeField]
+    private float m_LookError = 5f;
+    public Vector3 AimPoint { get; set; }
+
 
     private int m_IsHolsterHash = Animator.StringToHash("IsHolster");
     /*
@@ -33,8 +41,6 @@ public class PlayerAnimator : MonoBehaviour
             cameraManager.OnSwitchCam += OnSwitchCam;
 
         var inputHandler = GetComponent<InputHandler>();
-        if (inputHandler != null)
-            inputHandler.OnLook += OnLook;
     }
 
     void Start()
@@ -42,7 +48,7 @@ public class PlayerAnimator : MonoBehaviour
     }
 
 
-    void Update()
+    void LateUpdate()
     {
         if (m_CharacterController == null || m_Animator == null)
             return;
@@ -64,6 +70,11 @@ public class PlayerAnimator : MonoBehaviour
         var velocity = m_CharacterController.velocity;
 
         m_Animator.SetFloat(m_VelocityHash, velocity.magnitude);
+
+        var fpsTransform = FPSModel.transform;
+        var targetRot = Quaternion.LookRotation(AimPoint - fpsTransform.position);
+        if (Mathf.Abs(Quaternion.Angle(fpsTransform.rotation, targetRot)) > m_LookError)
+            fpsTransform.rotation = Quaternion.RotateTowards(fpsTransform.rotation, targetRot, Time.deltaTime * m_LerpSpeed);
     }
 
     private void HandleTPSMovement()
@@ -95,15 +106,6 @@ public class PlayerAnimator : MonoBehaviour
         }
 
         m_CurCamMode = mode;
-    }
-
-    void OnLook(Vector2 lookDelta)
-    {
-        if (m_CurCamMode == CameraMode.FirstPerson)
-        {
-            FPSModel.transform.Rotate(Vector3.right, -lookDelta.y);
-        }
-
     }
 
     public void SetHolster(bool isHolster)
