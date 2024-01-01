@@ -25,6 +25,7 @@ public class Weapon : MonoBehaviour
 
     protected Muzzle m_Muzzle;
     private Animator m_Animator;
+    private WeaponAnimationEventHandler m_AnimationEventHandler;
     private int m_FireStateHash = Animator.StringToHash("Fire");
 
 
@@ -52,6 +53,12 @@ public class Weapon : MonoBehaviour
     {
         m_Animator = GetComponentInChildren<Animator>();
         m_Muzzle = GetComponentInChildren<Muzzle>();
+        m_AnimationEventHandler = GetComponentInChildren<WeaponAnimationEventHandler>();
+
+        if (m_AnimationEventHandler != null)
+        {
+            m_AnimationEventHandler.OnEjectCasing += EjectCasing;
+        }
     }
 
     virtual protected void Update()
@@ -83,16 +90,16 @@ public class Weapon : MonoBehaviour
     }
 
 
-    virtual public bool TryFire()
+    virtual public bool TryFire(Vector3 aimPoint)
     {
         if (!CanFire)
             return false;
 
-        Fire();
+        Fire(aimPoint);
         return true;
     }
 
-    virtual public void Fire()
+    virtual public void Fire(Vector3 aimPoint)
     {
         if (m_Muzzle == null)
             return;
@@ -106,6 +113,11 @@ public class Weapon : MonoBehaviour
         {
             m_Animator.CrossFade(m_FireStateHash, 0.05f, 0, 0f);
         }
+    }
+
+    virtual public void EjectCasing()
+    {
+
     }
 
 

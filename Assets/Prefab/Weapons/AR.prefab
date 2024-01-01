@@ -79,8 +79,9 @@ GameObject:
   m_Component:
   - component: {fileID: 7435980851104392515}
   - component: {fileID: 7435980851096701605}
-  - component: {fileID: 7875680635918048789}
+  - component: {fileID: 6785701281229728142}
   - component: {fileID: 7879127677757373261}
+  - component: {fileID: 2131636774504159093}
   m_Layer: 0
   m_Name: AR
   m_TagString: Untagged
@@ -123,7 +124,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &7875680635918048789
+--- !u!114 &6785701281229728142
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -132,7 +133,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7435980851103971683}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76eddbb57e9703742a47a18d7d08040e, type: 3}
+  m_Script: {fileID: 11500000, guid: 6b11af8b31c80af4784bcd190bcdae12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   LeftHandTarget: {fileID: 7530101801697335242}
@@ -143,6 +144,11 @@ MonoBehaviour:
   m_FireCoolDown: 0.2
   m_CurAmmo: 999
   m_MaxAmmo: 30
+  m_Ejection: {fileID: 7435980851104392523}
+  m_ProjectilePrefab: {fileID: 114243545424532484, guid: eab8575c50d9d6c4b84f84a57a16051f,
+    type: 3}
+  m_CasingPrefab: {fileID: 114121961160874846, guid: e9ab4cf4fd54932478b2918bc8a0672d,
+    type: 3}
 --- !u!114 &7879127677757373261
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -163,6 +169,18 @@ MonoBehaviour:
     type: 3}
   m_FlashLightDuration: 0.1
   m_FlashLightOffset: {x: 0, y: 0, z: 0}
+--- !u!114 &2131636774504159093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7435980851103971683}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0be42d6bb354a404bb08df62899be5ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7435980851103971685
 GameObject:
   m_ObjectHideFlags: 0

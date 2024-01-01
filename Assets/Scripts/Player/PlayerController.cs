@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviour
     public LayerMask HitLayerMask;
     public float HitDistance = 1000f;
     private Camera m_Camera;
-    private RaycastHit m_HitTarget;
+    private Vector3 m_AimPoint;
 
 
     /**
@@ -102,14 +102,19 @@ public class PlayerController : MonoBehaviour
         if (m_SwitchTimer > 0f)
             m_SwitchTimer -= Time.deltaTime;
 
-
         if (m_Inventory.IsEquipped)
         {
             RaycastFromCrosshair();
-            m_PlayerAnimator.AimPoint = m_HitTarget.point;
+            m_PlayerAnimator.AimPoint = m_AimPoint;
         }
 
+        if (m_IsFiring)
+            TryFire();
 
+    }
+
+    void LateUpdate()
+    {
         if (m_CharacterController != null)
         {
             HandleGravity();
@@ -118,10 +123,6 @@ public class PlayerController : MonoBehaviour
 
             m_CharacterController.Move(m_Velocity * Time.deltaTime);
         }
-
-        if (m_IsFiring)
-            TryFire();
-
     }
 
     void RaycastFromCrosshair()
@@ -130,9 +131,14 @@ public class PlayerController : MonoBehaviour
             return;
 
         Ray ray = m_Camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
-        if (!Physics.Raycast(ray, out m_HitTarget, HitDistance, HitLayerMask))
+        RaycastHit hit;
+        if (!Physics.Raycast(ray, out hit, HitDistance, HitLayerMask))
         {
-            m_HitTarget.point = ray.GetPoint(HitDistance);
+            m_AimPoint = ray.GetPoint(HitDistance);
+        }
+        else
+        {
+            m_AimPoint = hit.point;
         }
 
     }
@@ -223,9 +229,11 @@ public class PlayerController : MonoBehaviour
 
         if (m_CurWeapon != null)
         {
-            if (m_CurWeapon.TryFire())
+            if (m_CurWeapon.TryFire(m_AimPoint))
             {
                 m_PlayerAnimator.Fire();
+                if (!m_CurWeapon.IsAutomatic)
+                    m_IsFiring = false;
             }
         }
     }
@@ -235,6 +243,9 @@ public class PlayerController : MonoBehaviour
         // Equip finished (gun raise)
         if (!m_IsHolster)
         {
+            // switch complete
+            if (CurrentState == PlayerState.Unequipped)
+                CurrentState = PlayerState.Idle;
             UpdateHandIK();
             // Switch weapon
             if (CurrentState == PlayerState.Switching)
@@ -254,7 +265,7 @@ public class PlayerController : MonoBehaviour
                 m_Inventory.EquipWeapon(m_WeaponIdx);
             }
             UpdateHandIK();
-            CurrentState = PlayerState.Idle;
+            CurrentState = PlayerState.Unequipped;
             m_IsHolster = false;
             m_PlayerAnimator.SetHolster(false);
             m_SwitchTimer = SwitchCoolDown;
@@ -295,12 +306,12 @@ public class PlayerController : MonoBehaviour
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(m_HitTarget.point, 0.1f);
+        Gizmos.DrawWireSphere(m_AimPoint, 0.1f);
     }
 
     void OnGUI()
     {
-        GUI.Label(new Rect(10, 10, 100, 20), $"{m_IsFiring}");
+        // GUI.Label(new Rect(10, 10, 100, 20), $"{m_IsFiring}");
 
     }
 #endif

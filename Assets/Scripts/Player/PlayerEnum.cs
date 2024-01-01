@@ -1,9 +1,9 @@
 public enum PlayerState
 {
     Idle,
-    Firing,
     Reloading,
     Switching,
+    Unequipped,
     ThrowGrenade,
     Dead,
 }

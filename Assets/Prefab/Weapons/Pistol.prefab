@@ -511,8 +511,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8113956860223613495}
   - component: {fileID: 2772735309803499597}
-  - component: {fileID: 1676413243194675382}
+  - component: {fileID: 8565035236152522254}
   - component: {fileID: 8159501176843770813}
+  - component: {fileID: 3457135928884474401}
   m_Layer: 0
   m_Name: Pistol
   m_TagString: Untagged
@@ -555,7 +556,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &1676413243194675382
+--- !u!114 &8565035236152522254
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -564,7 +565,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8921983164076306573}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76eddbb57e9703742a47a18d7d08040e, type: 3}
+  m_Script: {fileID: 11500000, guid: 6b11af8b31c80af4784bcd190bcdae12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   LeftHandTarget: {fileID: 3404344538154659934}
@@ -575,6 +576,11 @@ MonoBehaviour:
   m_FireCoolDown: 0.1
   m_CurAmmo: 30
   m_MaxAmmo: 30
+  m_Ejection: {fileID: 2353632301634022305}
+  m_ProjectilePrefab: {fileID: 114243545424532484, guid: eab8575c50d9d6c4b84f84a57a16051f,
+    type: 3}
+  m_CasingPrefab: {fileID: 114121961160874846, guid: fa4d74ad0ff204d41b96a0ee36de6f55,
+    type: 3}
 --- !u!114 &8159501176843770813
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -594,3 +600,15 @@ MonoBehaviour:
   m_PrefabFlashLight: {fileID: 0}
   m_FlashLightDuration: 0.1
   m_FlashLightOffset: {x: 0, y: 0, z: 0}
+--- !u!114 &3457135928884474401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8921983164076306573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0be42d6bb354a404bb08df62899be5ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
