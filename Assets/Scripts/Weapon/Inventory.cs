@@ -12,6 +12,8 @@ public class Inventory : MonoBehaviour
     {
         get
         {
+            if (m_CurIdx < 0 || m_CurIdx >= m_Weapons.Count)
+                return null;
             return m_Weapons[m_CurIdx];
         }
     }
@@ -34,7 +36,8 @@ public class Inventory : MonoBehaviour
         foreach (var weaponType in InitialWeapons)
         {
             var weapon = Instantiate(WeaponTable.WeaponDic[weaponType], transform).GetComponent<Weapon>();
-            weapon.gameObject.SetActive(false);
+            weapon.Type = weaponType;
+            weapon.Init();
             m_Weapons.Add(weapon);
         }
 
@@ -58,13 +61,25 @@ public class Inventory : MonoBehaviour
             return null;
 
         if (m_CurIdx >= 0 && m_Weapons[m_CurIdx] != null)
-            m_Weapons[m_CurIdx].gameObject.SetActive(false);
+        {
+            m_Weapons[m_CurIdx].OnUnequip();
+
+        }
 
         m_CurIdx = index;
         m_Weapons[index].transform.SetParent(WeaponSocket, false);
-        m_Weapons[index].gameObject.SetActive(true);
+        m_Weapons[index].OnEquip();
 
         return m_Weapons[index];
+    }
+
+    public virtual void UnequipWeapon()
+    {
+        if (m_CurIdx >= 0 && m_CurIdx < m_Weapons.Count && m_Weapons[m_CurIdx] != null)
+        {
+            m_Weapons[m_CurIdx].OnUnequip();
+            m_CurIdx = -1;
+        }
     }
 
 }

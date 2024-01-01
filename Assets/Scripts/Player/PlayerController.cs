@@ -13,6 +13,10 @@ public class PlayerController : MonoBehaviour
     private CharacterController m_CharacterController;
     private CameraManager m_CameraManager;
 
+
+    /**
+    * IK
+    */
     public PlayerAnimationEventHandler FPSAnimationEventHandler, TPSAnimationEventHandler;
     public IKHandler FPSIKHandler, TPSIKHandler;
     private IKHandler m_CurIKHandler;
@@ -20,14 +24,16 @@ public class PlayerController : MonoBehaviour
     /**
     * Movement
     */
-
     public float GroundSpeed = 5f;
-
     public float LookSpeed = 200f;
     public float LookPitchLimit = 60f;
-
     public float JumpSpeed = 5f;
     private Vector3 m_Velocity;
+
+    /**
+    * Fire
+    */
+    private bool m_IsFiring = false;
 
     /**
     * Raycast
@@ -46,6 +52,9 @@ public class PlayerController : MonoBehaviour
     public float SwitchCoolDown = 0.5f;
     private float m_SwitchTimer = 0f;
 
+
+    private Weapon m_CurWeapon;
+
     void Awake()
     {
         m_InputHandler = GetComponent<InputHandler>();
@@ -59,7 +68,8 @@ public class PlayerController : MonoBehaviour
             m_InputHandler.OnJump += Jump;
             m_InputHandler.OnSwitchNext += () => TrySwitchWeapon(m_Inventory.CurrentWeaponIndex + 1);
             m_InputHandler.OnSwitchPrev += () => TrySwitchWeapon(m_Inventory.CurrentWeaponIndex - 1);
-            m_InputHandler.OnFire += TryFire;
+            m_InputHandler.OnStartFire += () => m_IsFiring = true;
+            m_InputHandler.OnStopFire += () => m_IsFiring = false;
         }
 
         if (FPSAnimationEventHandler != null)
@@ -109,6 +119,8 @@ public class PlayerController : MonoBehaviour
             m_CharacterController.Move(m_Velocity * Time.deltaTime);
         }
 
+        if (m_IsFiring)
+            TryFire();
 
     }
 
@@ -209,10 +221,9 @@ public class PlayerController : MonoBehaviour
         if (m_Inventory == null || !m_Inventory.IsEquipped || !IsIdle)
             return;
 
-        var curWeapon = m_Inventory.CurrentWeapon;
-        if (curWeapon != null)
+        if (m_CurWeapon != null)
         {
-            if (curWeapon.TryFire())
+            if (m_CurWeapon.TryFire())
             {
                 m_PlayerAnimator.Fire();
             }
@@ -224,15 +235,16 @@ public class PlayerController : MonoBehaviour
         // Equip finished (gun raise)
         if (!m_IsHolster)
         {
-            // Switch weapon
             UpdateHandIK();
-            if (CurrentState != PlayerState.Switching)
-                return;
-            m_IsHolster = true;
-            m_PlayerAnimator.SetHolster(true);
-            m_Inventory.UnequipWeapon();
-            if (m_CurIKHandler != null)
-                m_CurIKHandler.LeftHandTarget = null;
+            // Switch weapon
+            if (CurrentState == PlayerState.Switching)
+            {
+                m_IsHolster = true;
+                m_PlayerAnimator.SetHolster(true);
+                m_Inventory.UnequipWeapon();
+                if (m_CurIKHandler != null)
+                    m_CurIKHandler.LeftHandTarget = null;
+            }
         }
         // Unequip finished (gun lower)
         else
@@ -247,6 +259,8 @@ public class PlayerController : MonoBehaviour
             m_PlayerAnimator.SetHolster(false);
             m_SwitchTimer = SwitchCoolDown;
         }
+
+        m_CurWeapon = m_Inventory.CurrentWeapon;
     }
     void OnSwitchCam(CameraMode mode)
     {
@@ -282,6 +296,12 @@ public class PlayerController : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(m_HitTarget.point, 0.1f);
+    }
+
+    void OnGUI()
+    {
+        GUI.Label(new Rect(10, 10, 100, 20), $"{m_IsFiring}");
+
     }
 #endif
 

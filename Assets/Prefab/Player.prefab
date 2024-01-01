@@ -69,10 +69,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1aaee09e87d56e4fa7510d9e79b2ec5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GroundSpeed: 5
-  LookSpeed: 200
-  LookPitchLimit: 60
-  JumpSpeed: 5
 --- !u!114 &853868078078848672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86,6 +82,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_LerpSpeed: 200
+  m_LookError: 5
   FPSModel: {fileID: 4012919284534065771}
   TPSModel: {fileID: 4652162316806400527}
 --- !u!114 &5052008473000847046
@@ -123,6 +120,10 @@ MonoBehaviour:
   TPSAnimationEventHandler: {fileID: 7810730412523444940}
   FPSIKHandler: {fileID: 579344853435795440}
   TPSIKHandler: {fileID: 5016627362659386433}
+  GroundSpeed: 5
+  LookSpeed: 100
+  LookPitchLimit: 60
+  JumpSpeed: 5
   HitLayerMask:
     serializedVersion: 2
     m_Bits: 279

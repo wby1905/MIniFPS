@@ -9,7 +9,8 @@ public class InputHandler : MonoBehaviour
     public UnityAction OnJump;
     public UnityAction OnSwitchPrev;
     public UnityAction OnSwitchNext;
-    public UnityAction OnFire;
+    public UnityAction OnStartFire;
+    public UnityAction OnStopFire;
 
     private PlayerControl m_PlayerControl;
     private CameraManager m_CameraManager;
@@ -47,7 +48,8 @@ public class InputHandler : MonoBehaviour
         m_PlayerControl.gameplay.Scroll.performed += ctx => Scroll();
         m_PlayerControl.gameplay.SwitchPrev.performed += ctx => SwitchPrev();
         m_PlayerControl.gameplay.SwitchNext.performed += ctx => SwitchNext();
-        m_PlayerControl.gameplay.Fire.performed += ctx => Fire();
+        m_PlayerControl.gameplay.Fire.started += ctx => StartFire();
+        m_PlayerControl.gameplay.Fire.canceled += ctx => StopFire();
     }
 
     void OnEnable()
@@ -117,9 +119,15 @@ public class InputHandler : MonoBehaviour
             OnSwitchNext.Invoke();
     }
 
-    void Fire()
+    void StartFire()
     {
-        if (OnFire != null)
-            OnFire.Invoke();
+        if (OnStartFire != null)
+            OnStartFire.Invoke();
+    }
+
+    void StopFire()
+    {
+        if (OnStopFire != null)
+            OnStopFire.Invoke();
     }
 }

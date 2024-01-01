@@ -89,6 +89,15 @@ public partial class @PlayerControl : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Fire"",
+                    ""type"": ""Button"",
+                    ""id"": ""cf25180d-f54e-4303-834b-d6656f5f50c2"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -265,6 +274,17 @@ public partial class @PlayerControl : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""SwitchNext"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""aadb830e-7731-4b0d-b568-2dfbbb197c9d"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Fire"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -798,6 +818,7 @@ public partial class @PlayerControl : IInputActionCollection2, IDisposable
         m_gameplay_Scroll = m_gameplay.FindAction("Scroll", throwIfNotFound: true);
         m_gameplay_SwitchPrev = m_gameplay.FindAction("SwitchPrev", throwIfNotFound: true);
         m_gameplay_SwitchNext = m_gameplay.FindAction("SwitchNext", throwIfNotFound: true);
+        m_gameplay_Fire = m_gameplay.FindAction("Fire", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -876,6 +897,7 @@ public partial class @PlayerControl : IInputActionCollection2, IDisposable
     private readonly InputAction m_gameplay_Scroll;
     private readonly InputAction m_gameplay_SwitchPrev;
     private readonly InputAction m_gameplay_SwitchNext;
+    private readonly InputAction m_gameplay_Fire;
     public struct GameplayActions
     {
         private @PlayerControl m_Wrapper;
@@ -887,6 +909,7 @@ public partial class @PlayerControl : IInputActionCollection2, IDisposable
         public InputAction @Scroll => m_Wrapper.m_gameplay_Scroll;
         public InputAction @SwitchPrev => m_Wrapper.m_gameplay_SwitchPrev;
         public InputAction @SwitchNext => m_Wrapper.m_gameplay_SwitchNext;
+        public InputAction @Fire => m_Wrapper.m_gameplay_Fire;
         public InputActionMap Get() { return m_Wrapper.m_gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -917,6 +940,9 @@ public partial class @PlayerControl : IInputActionCollection2, IDisposable
                 @SwitchNext.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSwitchNext;
                 @SwitchNext.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSwitchNext;
                 @SwitchNext.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSwitchNext;
+                @Fire.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnFire;
+                @Fire.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnFire;
+                @Fire.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnFire;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
@@ -942,6 +968,9 @@ public partial class @PlayerControl : IInputActionCollection2, IDisposable
                 @SwitchNext.started += instance.OnSwitchNext;
                 @SwitchNext.performed += instance.OnSwitchNext;
                 @SwitchNext.canceled += instance.OnSwitchNext;
+                @Fire.started += instance.OnFire;
+                @Fire.performed += instance.OnFire;
+                @Fire.canceled += instance.OnFire;
             }
         }
     }
@@ -1060,6 +1089,7 @@ public partial class @PlayerControl : IInputActionCollection2, IDisposable
         void OnScroll(InputAction.CallbackContext context);
         void OnSwitchPrev(InputAction.CallbackContext context);
         void OnSwitchNext(InputAction.CallbackContext context);
+        void OnFire(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

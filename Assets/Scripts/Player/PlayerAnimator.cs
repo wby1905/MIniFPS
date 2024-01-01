@@ -124,7 +124,7 @@ public class PlayerAnimator : MonoBehaviour
 
     public void Fire()
     {
-        m_Animator.CrossFade(m_FireStateHash, 0.05f, m_OverlayLayer);
+        m_Animator.CrossFade(m_FireStateHash, 0.05f, m_OverlayLayer, 0f);
     }
 
 
