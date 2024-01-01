@@ -50,6 +50,12 @@ public class RigidBullet : Projectile
 
     protected virtual void OnCollisionEnter(Collision other)
     {
+        Vector3 impactPoint = other.contacts[0].point;
+        Vector3 impactNormal = other.contacts[0].normal;
+        DecalManager.Instance.SpawnDecal(DecalType.BulletHole,
+            impactPoint + impactNormal * 0.01f,
+            Quaternion.LookRotation(impactNormal, Random.insideUnitSphere)
+         );
         Recycle();
     }
 

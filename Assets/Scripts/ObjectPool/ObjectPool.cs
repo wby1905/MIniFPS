@@ -8,7 +8,7 @@ public class ObjectPool<T> where T : MonoBehaviour, IPoolable
     private Transform m_Parent;
     private Stack<T> m_Pool = new Stack<T>();
 
-    public int Count => m_Pool.Count;
+    public int Count { get; private set; }
 
     public void Init(T prefab, Transform parent, int count)
     {
@@ -21,11 +21,22 @@ public class ObjectPool<T> where T : MonoBehaviour, IPoolable
             obj.name = $"{m_Prefab.name} {i}";
             m_Pool.Push(obj);
         }
+        Count = count;
     }
 
     public T Get()
     {
-        T obj = m_Pool.Count > 0 ? m_Pool.Pop() : GameObject.Instantiate(m_Prefab, m_Parent);
+        T obj;
+        if (m_Pool.Count == 0)
+        {
+            obj = m_Pool.Count > 0 ? m_Pool.Pop() : GameObject.Instantiate(m_Prefab, m_Parent);
+            obj.name = $"{m_Prefab.name} {Count}";
+            Count++;
+        }
+        else
+        {
+            obj = m_Pool.Pop();
+        }
         obj.gameObject.SetActive(true);
         obj.OnInit();
         return obj;
