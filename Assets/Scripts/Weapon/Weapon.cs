@@ -28,6 +28,9 @@ public class Weapon : MonoBehaviour
     [SerializeField]
     protected int m_MaxAmmo = 30;
 
+    private Animator m_Animator;
+    private int m_FireStateHash = Animator.StringToHash("Fire");
+
 
     public bool IsAutomatic => m_IsAutomatic;
     public int CurAmmo => m_CurAmmo;
@@ -49,6 +52,10 @@ public class Weapon : MonoBehaviour
         }
     }
 
+    virtual protected void Awake()
+    {
+        m_Animator = GetComponentInChildren<Animator>();
+    }
 
     virtual protected void Update()
     {
@@ -96,16 +103,18 @@ public class Weapon : MonoBehaviour
         m_FireTimer = m_FireCoolDown;
         m_CurAmmo--;
         State = WeaponState.Firing;
+
+        if (m_Animator != null)
+        {
+            m_Animator.CrossFade(m_FireStateHash, 0.05f, 0, 0f);
+        }
     }
 
 
 #if UNITY_EDITOR
     void OnDrawGizmos()
     {
-        if (Muzzle == null)
-            return;
-        Gizmos.color = Color.green;
-        Gizmos.DrawLine(Muzzle.position, Muzzle.position + Muzzle.forward * 100f);
+
     }
 #endif
 }

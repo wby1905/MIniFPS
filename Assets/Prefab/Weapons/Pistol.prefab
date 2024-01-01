@@ -545,7 +545,7 @@ Animator:
   m_GameObject: {fileID: 8921983164076306573}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 40cb849895dd45645ac3fadcc88190af, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 22100000, guid: f44bcf3ab91848b47a3cc814cef276fa, type: 2}
   m_CullingMode: 2
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -572,7 +572,7 @@ MonoBehaviour:
   RightHandPole: {fileID: 0}
   Muzzle: {fileID: 5389042421457599668}
   m_ProjectilePrefab: {fileID: 0}
-  m_FireRate: 1
   m_IsAutomatic: 0
+  m_FireCoolDown: 0.25
   m_CurAmmo: 30
   m_MaxAmmo: 30
