@@ -15,6 +15,8 @@ public class PlayerAnimator : MonoBehaviour
 
 
     private int m_IsHolsterHash = Animator.StringToHash("IsHolster");
+    private int m_FireStateHash = Animator.StringToHash("Fire");
+    private int m_OverlayLayer;
     /*
     * TPS specific animator parameters
     */
@@ -30,6 +32,7 @@ public class PlayerAnimator : MonoBehaviour
     private CameraMode m_CurCamMode;
     public GameObject FPSModel;
     public GameObject TPSModel;
+    public GameObject CurrentModel => m_CurCamMode == CameraMode.FirstPerson ? FPSModel : TPSModel;
 
     void Awake()
     {
@@ -45,6 +48,7 @@ public class PlayerAnimator : MonoBehaviour
 
     void Start()
     {
+
     }
 
 
@@ -105,6 +109,11 @@ public class PlayerAnimator : MonoBehaviour
                 break;
         }
 
+        if (m_Animator != null)
+        {
+            m_OverlayLayer = m_Animator.GetLayerIndex("Layer Overlay");
+        }
+
         m_CurCamMode = mode;
     }
 
@@ -113,4 +122,19 @@ public class PlayerAnimator : MonoBehaviour
         m_Animator.SetBool(m_IsHolsterHash, isHolster);
     }
 
+    public void Fire()
+    {
+        m_Animator.CrossFade(m_FireStateHash, 0.05f, m_OverlayLayer);
+    }
+
+
+    // Not called by input handler but player controller to get corrected look input
+    public void OnLook(Vector2 look)
+    {
+        if (m_CurCamMode == CameraMode.FirstPerson)
+        {
+            FPSModel.transform.Rotate(-look.y, 0, 0);
+        }
+
+    }
 }
