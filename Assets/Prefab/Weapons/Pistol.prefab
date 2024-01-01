@@ -155,13 +155,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2306252904723780456}
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.000072134506, y: -0.17379263, z: 0.041744474}
   m_LocalScale: {x: 1, y: 0.99999994, z: 1}
   m_Children: []
   m_Father: {fileID: 5402050389260423633}
   m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2802392669748255914
 GameObject:
   m_ObjectHideFlags: 0
@@ -512,6 +512,7 @@ GameObject:
   - component: {fileID: 8113956860223613495}
   - component: {fileID: 2772735309803499597}
   - component: {fileID: 1676413243194675382}
+  - component: {fileID: 8159501176843770813}
   m_Layer: 0
   m_Name: Pistol
   m_TagString: Untagged
@@ -570,9 +571,26 @@ MonoBehaviour:
   RightHandTarget: {fileID: 0}
   LeftHandPole: {fileID: 0}
   RightHandPole: {fileID: 0}
-  Muzzle: {fileID: 5389042421457599668}
-  m_ProjectilePrefab: {fileID: 0}
   m_IsAutomatic: 0
-  m_FireCoolDown: 0.25
+  m_FireCoolDown: 0.1
   m_CurAmmo: 30
   m_MaxAmmo: 30
+--- !u!114 &8159501176843770813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8921983164076306573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a986dadc5cee6740a771c357b365423, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Socket: {fileID: 5389042421457599668}
+  m_PrefabFlashParticles: {fileID: 4834526503407549940, guid: 2735bebe54c1f5a4096f5134a96f7e77,
+    type: 3}
+  m_FlashParticlesCount: 5
+  m_PrefabFlashLight: {fileID: 0}
+  m_FlashLightDuration: 0.1
+  m_FlashLightOffset: {x: 0, y: 0, z: 0}

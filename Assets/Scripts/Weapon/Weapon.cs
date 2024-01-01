@@ -6,14 +6,8 @@ public class Weapon : MonoBehaviour
     public Transform LeftHandTarget, RightHandTarget;
     public Transform LeftHandPole, RightHandPole;
 
-    public Transform Muzzle;
-
     public WeaponState State { get; protected set; }
     public WeaponType Type { get; set; }
-
-    [SerializeField]
-    protected Projectile m_ProjectilePrefab;
-
 
     [SerializeField]
     protected bool m_IsAutomatic = false;
@@ -28,6 +22,8 @@ public class Weapon : MonoBehaviour
     [SerializeField]
     protected int m_MaxAmmo = 30;
 
+
+    protected Muzzle m_Muzzle;
     private Animator m_Animator;
     private int m_FireStateHash = Animator.StringToHash("Fire");
 
@@ -55,6 +51,7 @@ public class Weapon : MonoBehaviour
     virtual protected void Awake()
     {
         m_Animator = GetComponentInChildren<Animator>();
+        m_Muzzle = GetComponentInChildren<Muzzle>();
     }
 
     virtual protected void Update()
@@ -97,12 +94,13 @@ public class Weapon : MonoBehaviour
 
     virtual public void Fire()
     {
-        if (Muzzle == null)
+        if (m_Muzzle == null)
             return;
 
         m_FireTimer = m_FireCoolDown;
         m_CurAmmo--;
         State = WeaponState.Firing;
+        m_Muzzle.Fire();
 
         if (m_Animator != null)
         {
