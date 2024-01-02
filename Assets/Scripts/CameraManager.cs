@@ -3,6 +3,7 @@ using Cinemachine;
 using UnityEngine.Events;
 using System.Collections.Generic;
 using System;
+using System.Collections;
 
 public enum CameraMode { FirstPerson, ThirdPerson };
 public class CameraManager : Singleton<CameraManager>
@@ -37,6 +38,11 @@ public class CameraManager : Singleton<CameraManager>
         }
     }
     private Camera m_MainCamera;
+
+
+    [SerializeField]
+    private float m_LerpSpeed = 5f;
+    private Vector3 curOffset = Vector3.zero;
 
     public void SwitchCam()
     {
@@ -82,6 +88,25 @@ public class CameraManager : Singleton<CameraManager>
         // initial switch to default camera mode
         if (OnSwitchCam != null)
             OnSwitchCam.Invoke(CurrentCameraMode);
+    }
+
+    public void MoveCurCamera(Vector3 offset)
+    {
+        curOffset = offset;
+    }
+
+    public void ResetCurCamera()
+    {
+        curOffset = Vector3.zero;
+    }
+
+    void Update()
+    {
+        var offset = CurrentVirtualCamera.GetComponent<CinemachineCameraOffset>();
+        if (offset != null && offset.m_Offset != curOffset)
+        {
+            offset.m_Offset = Vector3.MoveTowards(offset.m_Offset, curOffset, Time.deltaTime * m_LerpSpeed);
+        }
     }
 
 }

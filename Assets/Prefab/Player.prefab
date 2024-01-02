@@ -83,6 +83,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_LerpSpeed: 200
   m_LookError: 5
+  m_AimSpeed: 5
   FPSModel: {fileID: 4012919284534065771}
   TPSModel: {fileID: 4652162316806400527}
 --- !u!114 &5052008473000847046
@@ -121,9 +122,12 @@ MonoBehaviour:
   FPSIKHandler: {fileID: 579344853435795440}
   TPSIKHandler: {fileID: 5016627362659386433}
   GroundSpeed: 5
+  RunSpeed: 2
   LookSpeed: 100
   LookPitchLimit: 60
   JumpSpeed: 5
+  m_FPSAimOffset: {x: 0.18, y: 0, z: 0}
+  m_AimDuration: 0.2
   HitLayerMask:
     serializedVersion: 2
     m_Bits: 279
@@ -139,6 +143,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7130955407088444645}
   - component: {fileID: 8179127996998081697}
+  - component: {fileID: 3098601735332629489}
   m_Layer: 9
   m_Name: CM FPS
   m_TagString: Untagged
@@ -196,6 +201,21 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 1704187332148377472}
+--- !u!114 &3098601735332629489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6084910313717544701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44d70cc20219cd84593f67d248eafe36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Offset: {x: 0, y: 0, z: 0}
+  m_ApplyAfter: 1
+  m_PreserveComposition: 0
 --- !u!1 &6397771128750360589
 GameObject:
   m_ObjectHideFlags: 0

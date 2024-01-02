@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 public class Weapon : MonoBehaviour
@@ -141,6 +140,17 @@ public class Weapon : MonoBehaviour
             m_AudioManager.PlayOneShot(m_FireEmptySound, 0.5f, 1f, transform.position);
         }
     }
+
+    virtual public void TryAiming()
+    {
+
+    }
+
+    virtual public void StopAiming()
+    {
+
+    }
+
 
     virtual public void EjectCasing()
     {

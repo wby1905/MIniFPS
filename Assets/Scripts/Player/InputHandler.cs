@@ -11,28 +11,18 @@ public class InputHandler : MonoBehaviour
     public UnityAction OnSwitchNext;
     public UnityAction OnStartFire;
     public UnityAction OnStopFire;
+    public UnityAction OnStartAim;
+    public UnityAction OnStopAim;
+    public UnityAction OnReload;
+    public UnityAction OnStartRun;
+    public UnityAction OnStopRun;
 
     private PlayerControl m_PlayerControl;
     private CameraManager m_CameraManager;
     private PlayerController m_PlayerController;
 
-    public Vector2 MoveInput
-    {
-        get
-        {
-            return m_PlayerControl.gameplay.Move.ReadValue<Vector2>();
-        }
-    }
-
-    public Vector2 LookInput
-    {
-        get
-        {
-            return m_PlayerControl.gameplay.Look.ReadValue<Vector2>();
-        }
-    }
-
-
+    public Vector2 MoveInput => m_PlayerControl.gameplay.Move.ReadValue<Vector2>();
+    public Vector2 LookInput => m_PlayerControl.gameplay.Look.ReadValue<Vector2>();
 
     void Awake()
     {
@@ -46,12 +36,23 @@ public class InputHandler : MonoBehaviour
         m_PlayerControl.gameplay.Move.performed += ctx => Move();
         m_PlayerControl.gameplay.Look.performed += ctx => Look();
         m_PlayerControl.gameplay.Jump.performed += ctx => Jump();
+
         m_PlayerControl.gameplay.SwitchCam.performed += ctx => SwitchCam();
+
         m_PlayerControl.gameplay.Scroll.performed += ctx => Scroll();
         m_PlayerControl.gameplay.SwitchPrev.performed += ctx => SwitchPrev();
         m_PlayerControl.gameplay.SwitchNext.performed += ctx => SwitchNext();
+
         m_PlayerControl.gameplay.Fire.started += ctx => StartFire();
         m_PlayerControl.gameplay.Fire.canceled += ctx => StopFire();
+
+        m_PlayerControl.gameplay.Aim.started += ctx => StartAim();
+        m_PlayerControl.gameplay.Aim.canceled += ctx => StopAim();
+        m_PlayerControl.gameplay.Reload.performed += ctx => Reload();
+
+        m_PlayerControl.gameplay.Run.started += ctx => StartRun();
+        m_PlayerControl.gameplay.Run.canceled += ctx => StopRun();
+
     }
 
     void OnEnable()
@@ -134,5 +135,35 @@ public class InputHandler : MonoBehaviour
     {
         if (OnStopFire != null)
             OnStopFire.Invoke();
+    }
+
+    void StartAim()
+    {
+        if (OnStartAim != null)
+            OnStartAim.Invoke();
+    }
+
+    void StopAim()
+    {
+        if (OnStopAim != null)
+            OnStopAim.Invoke();
+    }
+
+    void Reload()
+    {
+        if (OnReload != null)
+            OnReload.Invoke();
+    }
+
+    void StartRun()
+    {
+        if (OnStartRun != null)
+            OnStartRun.Invoke();
+    }
+
+    void StopRun()
+    {
+        if (OnStopRun != null)
+            OnStopRun.Invoke();
     }
 }

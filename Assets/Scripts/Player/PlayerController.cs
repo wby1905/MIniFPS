@@ -1,11 +1,19 @@
 using Cinemachine;
 using UnityEngine;
+using UnityEngine.Video;
 
 public class PlayerController : MonoBehaviour
 {
     public PlayerState CurrentState { get; private set; }
 
     public bool IsIdle => CurrentState == PlayerState.Idle;
+    public bool IsSwitching => CurrentState == PlayerState.Switching;
+    public bool IsRunning => CurrentState == PlayerState.Running;
+    public bool IsAiming => CurrentState == PlayerState.Aiming;
+    public bool CanSwitch => m_Inventory != null && IsIdle && m_SwitchTimer <= 0f;
+    public bool CanFire => m_Inventory != null && m_Inventory.IsEquipped && (IsIdle || IsAiming || IsRunning);
+    public bool CanAim => m_Inventory != null && m_Inventory.IsEquipped && IsIdle;
+    public bool CanRun => IsIdle;
 
     private InputHandler m_InputHandler;
     private PlayerInventory m_Inventory;
@@ -25,15 +33,25 @@ public class PlayerController : MonoBehaviour
     * Movement
     */
     public float GroundSpeed = 5f;
+    public float RunSpeed = 10f;
     public float LookSpeed = 200f;
     public float LookPitchLimit = 60f;
     public float JumpSpeed = 5f;
     private Vector3 m_Velocity;
+    private bool m_IsRunning = false;
 
     /**
     * Fire
     */
+    [SerializeField]
+    private Vector3 m_FPSAimOffset;
+    [SerializeField]
+    private Vector3 m_FPSAimOffsetTop = new Vector3(0, 0.08f, 0);
+    [SerializeField]
+    private Vector3 m_FPSAimOffsetBottom = new Vector3(0, -0.1f, 0);
     private bool m_IsFiring = false;
+    private bool m_IsAiming = false;
+    private Vector3 m_FPSCurAimOffset;
 
     /**
     * Raycast
@@ -42,6 +60,7 @@ public class PlayerController : MonoBehaviour
     public float HitDistance = 1000f;
     private Camera m_Camera;
     private Vector3 m_AimPoint;
+    private Vector3 m_ScreenCenter = new Vector3(0.5f, 0.5f, 0f);
 
 
     /**
@@ -70,6 +89,10 @@ public class PlayerController : MonoBehaviour
             m_InputHandler.OnSwitchPrev += () => TrySwitchWeapon(m_Inventory.CurrentWeaponIndex - 1);
             m_InputHandler.OnStartFire += () => m_IsFiring = true;
             m_InputHandler.OnStopFire += () => m_IsFiring = false;
+            m_InputHandler.OnStartAim += () => m_IsAiming = true;
+            m_InputHandler.OnStopAim += () => { StopAiming(); m_IsAiming = false; };
+            m_InputHandler.OnStartRun += () => m_IsRunning = true;
+            m_InputHandler.OnStopRun += () => { StopRunning(); m_IsRunning = false; };
         }
 
         if (FPSAnimationEventHandler != null)
@@ -111,6 +134,12 @@ public class PlayerController : MonoBehaviour
         if (m_IsFiring)
             TryFire();
 
+        // aiming and running are mutually exclusive
+        if (m_IsAiming)
+            TryStartAim();
+        else if (m_IsRunning)
+            TryRunning();
+
     }
 
     void LateUpdate()
@@ -120,7 +149,11 @@ public class PlayerController : MonoBehaviour
             HandleGravity();
             HandleLook();
             HandleMove();
-
+            if (IsRunning)
+            {
+                m_Velocity.x *= RunSpeed;
+                m_Velocity.z *= RunSpeed;
+            }
             m_CharacterController.Move(m_Velocity * Time.deltaTime);
         }
     }
@@ -130,7 +163,7 @@ public class PlayerController : MonoBehaviour
         if (m_Camera == null)
             return;
 
-        Ray ray = m_Camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+        Ray ray = m_Camera.ViewportPointToRay(m_ScreenCenter);
         RaycastHit hit;
         if (!Physics.Raycast(ray, out hit, HitDistance, HitLayerMask))
         {
@@ -165,7 +198,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            m_Velocity.y -= 9.81f * Time.deltaTime;
+            m_Velocity += Physics.gravity * Time.deltaTime;
         }
     }
 
@@ -187,9 +220,12 @@ public class PlayerController : MonoBehaviour
                 if (curPitch > 180f) curPitch -= 360f;
                 if (curPitch < -180f) curPitch += 360f;
                 var deltaPitch = -look.y;
-                if (curPitch + deltaPitch < -LookPitchLimit || curPitch + deltaPitch > LookPitchLimit)
+                curPitch += deltaPitch;
+                if (curPitch < -LookPitchLimit || curPitch > LookPitchLimit)
                     return;
-                curCM.transform.Rotate(-look.y, 0, 0);
+                curCM.transform.Rotate(deltaPitch, 0, 0);
+                if (IsAiming)
+                    AimOffset();
                 break;
 
             case CameraMode.ThirdPerson:
@@ -203,7 +239,9 @@ public class PlayerController : MonoBehaviour
         m_PlayerAnimator.OnLook(look);
     }
 
-
+    /*
+    * Input events
+    */
     void Jump()
     {
         if (!m_CharacterController.isGrounded)
@@ -213,7 +251,13 @@ public class PlayerController : MonoBehaviour
 
     void TrySwitchWeapon(int index)
     {
-        if (m_Inventory == null || !IsIdle || m_SwitchTimer > 0f)
+        if (IsAiming)
+            StopAiming();
+
+        if (IsRunning)
+            StopRunning();
+
+        if (!CanSwitch)
             return;
 
         CurrentState = PlayerState.Switching;
@@ -224,8 +268,7 @@ public class PlayerController : MonoBehaviour
     }
     void TryFire()
     {
-        if (m_Inventory == null || !m_Inventory.IsEquipped || !IsIdle)
-            return;
+        if (!CanFire) return;
 
         if (m_CurWeapon != null)
         {
@@ -238,6 +281,65 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void TryStartAim()
+    {
+        if (IsRunning)
+            StopRunning();
+
+        if (!CanAim) return;
+
+        CurrentState = PlayerState.Aiming;
+        m_PlayerAnimator.StartAiming();
+        m_CurWeapon.TryAiming();
+        AimOffset();
+    }
+
+    void StopAiming()
+    {
+        CurrentState = PlayerState.Idle;
+        m_PlayerAnimator.StopAiming();
+        m_CurWeapon.StopAiming();
+
+        if (m_CameraManager.CurrentCameraMode == CameraMode.FirstPerson)
+        {
+            m_CameraManager.ResetCurCamera();
+        }
+    }
+
+    private void AimOffset()
+    {
+        // temporary solution for camera offset
+        // may be configurable for every weapon
+        var curPitch = m_Camera.transform.eulerAngles.x;
+        if (curPitch > 180f) curPitch -= 360f;
+        if (curPitch < -180f) curPitch += 360f;
+        var fraction = (curPitch + LookPitchLimit) / (2 * LookPitchLimit);
+        m_FPSCurAimOffset = m_FPSAimOffset +
+                            Vector3.Lerp(m_FPSAimOffsetTop, m_FPSAimOffsetBottom, fraction);
+        m_CameraManager.MoveCurCamera(m_FPSCurAimOffset);
+    }
+
+    void TryRunning()
+    {
+        if (IsAiming)
+            StopAiming();
+
+        if (!CanRun) return;
+
+        m_PlayerAnimator.SetRunning(true);
+        CurrentState = PlayerState.Running;
+    }
+
+    void StopRunning()
+    {
+        m_PlayerAnimator.SetRunning(false);
+        CurrentState = PlayerState.Idle;
+    }
+
+
+    /*
+    * Animation events
+    */
     void OnHolster()
     {
         // Equip finished (gun raise)
@@ -273,6 +375,11 @@ public class PlayerController : MonoBehaviour
 
         m_CurWeapon = m_Inventory.CurrentWeapon;
     }
+
+
+    /*
+    * Camera events
+    */
     void OnSwitchCam(CameraMode mode)
     {
         switch (mode)
@@ -287,7 +394,10 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    void UpdateHandIK()
+    /*
+    * IK
+    */
+    private void UpdateHandIK()
     {
         if (m_Inventory == null || m_CurIKHandler == null)
             return;
@@ -311,7 +421,6 @@ public class PlayerController : MonoBehaviour
 
     void OnGUI()
     {
-        // GUI.Label(new Rect(10, 10, 100, 20), $"{m_IsFiring}");
 
     }
 #endif

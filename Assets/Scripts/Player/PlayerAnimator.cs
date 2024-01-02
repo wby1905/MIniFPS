@@ -11,18 +11,23 @@ public class PlayerAnimator : MonoBehaviour
     private float m_LerpSpeed = 5f;
     [SerializeField]
     private float m_LookError = 5f;
+    [SerializeField]
+    private float m_AimSpeed = 5f;
     public Vector3 AimPoint { get; set; }
 
 
+    private int m_OverlayLayer;
     private int m_IsHolsterHash = Animator.StringToHash("IsHolster");
     private int m_FireStateHash = Animator.StringToHash("Fire");
-    private int m_OverlayLayer;
+    private int m_IsGroundedHash = Animator.StringToHash("IsGrounded");
+    private int m_IsRunningHash = Animator.StringToHash("IsRunning");
+    private int m_AimingHash = Animator.StringToHash("Aiming");
+
     /*
     * TPS specific animator parameters
     */
     private int m_VelocityXHash = Animator.StringToHash("VelocityX");
     private int m_VelocityZHash = Animator.StringToHash("VelocityZ");
-    private int m_IsGroundedHash = Animator.StringToHash("IsGrounded");
 
     /*
     * FPS specific animator parameters
@@ -30,6 +35,10 @@ public class PlayerAnimator : MonoBehaviour
     private int m_VelocityHash = Animator.StringToHash("Velocity");
 
     private CameraMode m_CurCamMode;
+    private float m_CurAimValue = -1f;
+    private int m_AimStatus = 0;
+
+
     public GameObject FPSModel;
     public GameObject TPSModel;
     public GameObject CurrentModel => m_CurCamMode == CameraMode.FirstPerson ? FPSModel : TPSModel;
@@ -51,11 +60,31 @@ public class PlayerAnimator : MonoBehaviour
 
     }
 
+    void Update()
+    {
+        if (m_AimStatus == 1 && m_CurAimValue < 1f)
+        {
+            m_CurAimValue += Time.deltaTime * m_AimSpeed;
+            m_Animator.SetFloat(m_AimingHash, m_CurAimValue);
+            if (m_CurAimValue >= 1f)
+                m_AimStatus = 0;
+        }
+        else if (m_AimStatus == -1 && m_CurAimValue > 0f)
+        {
+            m_CurAimValue -= Time.deltaTime * m_AimSpeed;
+            m_Animator.SetFloat(m_AimingHash, m_CurAimValue);
+            if (m_CurAimValue <= 0f)
+                m_AimStatus = 0;
+        }
+    }
+
 
     void LateUpdate()
     {
         if (m_CharacterController == null || m_Animator == null)
             return;
+
+        m_Animator.SetBool(m_IsGroundedHash, m_CharacterController.isGrounded);
 
         switch (m_CurCamMode)
         {
@@ -89,8 +118,6 @@ public class PlayerAnimator : MonoBehaviour
 
         m_Animator.SetFloat(m_VelocityXHash, VelocityX);
         m_Animator.SetFloat(m_VelocityZHash, VelocityZ);
-        m_Animator.SetBool(m_IsGroundedHash, m_CharacterController.isGrounded);
-
     }
 
     void OnSwitchCam(CameraMode mode)
@@ -125,6 +152,21 @@ public class PlayerAnimator : MonoBehaviour
     public void Fire()
     {
         m_Animator.CrossFade(m_FireStateHash, 0.05f, m_OverlayLayer, 0f);
+    }
+
+    public void StartAiming()
+    {
+        m_AimStatus = 1;
+    }
+
+    public void StopAiming()
+    {
+        m_AimStatus = -1;
+    }
+
+    public void SetRunning(bool isRunning)
+    {
+        m_Animator.SetBool(m_IsRunningHash, isRunning);
     }
 
 
