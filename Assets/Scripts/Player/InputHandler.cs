@@ -14,6 +14,7 @@ public class InputHandler : MonoBehaviour
 
     private PlayerControl m_PlayerControl;
     private CameraManager m_CameraManager;
+    private PlayerController m_PlayerController;
 
     public Vector2 MoveInput
     {
@@ -36,6 +37,7 @@ public class InputHandler : MonoBehaviour
     void Awake()
     {
         m_PlayerControl = new PlayerControl();
+        m_PlayerController = GetComponent<PlayerController>();
         m_CameraManager = CameraManager.Instance;
 
         /**
@@ -93,7 +95,10 @@ public class InputHandler : MonoBehaviour
 
     void SwitchCam()
     {
-        m_CameraManager.SwitchCam();
+        // only switch cam if player is idle
+        // maybe remove this when fps and tps are updated simultaneously
+        if (m_PlayerController.IsIdle && m_CameraManager != null)
+            m_CameraManager.SwitchCam();
     }
 
     void Scroll()
