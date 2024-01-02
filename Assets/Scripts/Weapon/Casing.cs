@@ -29,6 +29,13 @@ public class Casing : MonoBehaviour, IPoolable
         }
     }
 
+    void OnCollisionEnter(Collision collision)
+    {
+        float volume = Random.Range(0.2f, 0.4f);
+        float pitch = Random.Range(0.8f, 1.2f);
+        AudioManager.Instance.PlayOneShot(AudioType.Casing, volume, pitch, transform.position);
+    }
+
     public void Eject(Vector3 startPos, Vector3 direction)
     {
         transform.position = startPos;

@@ -576,6 +576,9 @@ MonoBehaviour:
   m_FireCoolDown: 0.1
   m_CurAmmo: 30
   m_MaxAmmo: 30
+  m_FireSounds:
+  - {fileID: 8300000, guid: 9e9480b4d07646942b555fd43f2a0f71, type: 3}
+  m_FireEmptySound: {fileID: 8300000, guid: 0c187ee2790c74c4e9985aa1ee1a12d5, type: 3}
   m_Ejection: {fileID: 2353632301634022305}
   m_ProjectilePrefab: {fileID: 114243545424532484, guid: eab8575c50d9d6c4b84f84a57a16051f,
     type: 3}

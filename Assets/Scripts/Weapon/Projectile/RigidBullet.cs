@@ -56,6 +56,11 @@ public class RigidBullet : Projectile
             impactPoint + impactNormal * 0.01f,
             Quaternion.LookRotation(impactNormal, Random.insideUnitSphere)
          );
+
+        float volume = Random.Range(0.1f, 0.3f);
+        float pitch = Random.Range(0.8f, 1.2f);
+        AudioManager.Instance.PlayOneShot(AudioType.BulletImpact, volume, pitch, transform.position);
+
         Recycle();
     }
 

@@ -2,6 +2,12 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+public interface IPoolable
+{
+    void OnInit();
+    void OnRecycle();
+}
+
 public class ObjectPool<T> where T : MonoBehaviour, IPoolable
 {
     private T m_Prefab;
@@ -47,6 +53,8 @@ public class ObjectPool<T> where T : MonoBehaviour, IPoolable
         obj.OnRecycle();
         obj.gameObject.SetActive(false);
         obj.transform.SetParent(m_Parent);
+        obj.transform.localPosition = Vector3.zero;
+        obj.transform.localRotation = Quaternion.identity;
         m_Pool.Push(obj);
     }
 
