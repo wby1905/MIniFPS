@@ -1668,6 +1668,11 @@ PrefabInstance:
       propertyPath: m_SkinnedMotionVectors
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 853868078078848672, guid: a4ece7350cf529f49b2fa82a7db28d5e,
+        type: 3}
+      propertyPath: m_LookError
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 4634163054130379226, guid: a4ece7350cf529f49b2fa82a7db28d5e,
         type: 3}
       propertyPath: m_Name
