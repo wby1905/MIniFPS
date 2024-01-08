@@ -10,10 +10,12 @@ public class PlayerController : MonoBehaviour
     public bool IsSwitching => CurrentState == PlayerState.Switching;
     public bool IsRunning => CurrentState == PlayerState.Running;
     public bool IsAiming => CurrentState == PlayerState.Aiming;
-    public bool CanSwitch => m_Inventory != null && IsIdle && m_SwitchTimer <= 0f;
-    public bool CanFire => m_Inventory != null && m_Inventory.IsEquipped && (IsIdle || IsAiming || IsRunning);
-    public bool CanAim => m_Inventory != null && m_Inventory.IsEquipped && IsIdle;
-    public bool CanRun => IsIdle;
+    public bool IsReloading => CurrentState == PlayerState.Reloading;
+    protected bool CanSwitch => m_Inventory != null && IsIdle && m_SwitchTimer <= 0f;
+    protected bool CanFire => m_Inventory != null && m_Inventory.IsEquipped && (IsIdle || IsAiming || IsRunning);
+    protected bool CanAim => m_Inventory != null && m_Inventory.IsEquipped && IsIdle;
+    protected bool CanRun => IsIdle;
+    protected bool CanReload => m_Inventory != null && m_Inventory.IsEquipped && IsIdle;
 
     private InputHandler m_InputHandler;
     private PlayerInventory m_Inventory;
@@ -93,16 +95,19 @@ public class PlayerController : MonoBehaviour
             m_InputHandler.OnStopAim += () => { StopAiming(); m_IsAiming = false; };
             m_InputHandler.OnStartRun += () => m_IsRunning = true;
             m_InputHandler.OnStopRun += () => { StopRunning(); m_IsRunning = false; };
+            m_InputHandler.OnReload += TryReloading;
         }
 
         if (FPSAnimationEventHandler != null)
         {
-            FPSAnimationEventHandler.OnHolster += OnHolster;
+            FPSAnimationEventHandler.Holster += OnHolster;
+            FPSAnimationEventHandler.ReloadComplete += OnReloadComplete;
         }
 
         if (TPSAnimationEventHandler != null)
         {
-            TPSAnimationEventHandler.OnHolster += OnHolster;
+            TPSAnimationEventHandler.Holster += OnHolster;
+            TPSAnimationEventHandler.ReloadComplete += OnReloadComplete;
         }
 
         CurrentState = PlayerState.Idle;
@@ -272,11 +277,16 @@ public class PlayerController : MonoBehaviour
 
         if (m_CurWeapon != null)
         {
-            if (m_CurWeapon.TryFire(m_AimPoint))
+            var state = m_CurWeapon.TryFire(m_AimPoint);
+            if (state == WeaponState.Firing)
             {
                 m_PlayerAnimator.Fire();
                 if (!m_CurWeapon.IsAutomatic)
                     m_IsFiring = false;
+            }
+            else if (state == WeaponState.Reloading)
+            {
+                TryReloading();
             }
         }
     }
@@ -336,6 +346,25 @@ public class PlayerController : MonoBehaviour
         CurrentState = PlayerState.Idle;
     }
 
+    void TryReloading()
+    {
+        if (IsAiming)
+            StopAiming();
+        if (IsRunning)
+            StopRunning();
+
+        if (!CanReload) return;
+
+        if (m_CurWeapon != null)
+        {
+            if (m_CurWeapon.TryReload())
+            {
+                CurrentState = PlayerState.Reloading;
+                m_PlayerAnimator.Reload();
+            }
+        }
+    }
+
 
     /*
     * Animation events
@@ -374,6 +403,11 @@ public class PlayerController : MonoBehaviour
         }
 
         m_CurWeapon = m_Inventory.CurrentWeapon;
+    }
+
+    void OnReloadComplete()
+    {
+        CurrentState = PlayerState.Idle;
     }
 
 

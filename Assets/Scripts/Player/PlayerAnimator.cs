@@ -17,22 +17,23 @@ public class PlayerAnimator : MonoBehaviour
 
 
     private int m_OverlayLayer;
-    private int m_IsHolsterHash = Animator.StringToHash("IsHolster");
-    private int m_FireStateHash = Animator.StringToHash("Fire");
-    private int m_IsGroundedHash = Animator.StringToHash("IsGrounded");
-    private int m_IsRunningHash = Animator.StringToHash("IsRunning");
-    private int m_AimingHash = Animator.StringToHash("Aiming");
+    private readonly int m_IsHolsterHash = Animator.StringToHash("IsHolster");
+    private readonly int m_FireStateHash = Animator.StringToHash("Fire");
+    private readonly int m_IsGroundedHash = Animator.StringToHash("IsGrounded");
+    private readonly int m_IsRunningHash = Animator.StringToHash("IsRunning");
+    private readonly int m_AimingHash = Animator.StringToHash("Aiming");
+    private readonly int m_ReloadStateHash = Animator.StringToHash("Reload");
 
     /*
     * TPS specific animator parameters
     */
-    private int m_VelocityXHash = Animator.StringToHash("VelocityX");
-    private int m_VelocityZHash = Animator.StringToHash("VelocityZ");
+    private readonly int m_VelocityXHash = Animator.StringToHash("VelocityX");
+    private readonly int m_VelocityZHash = Animator.StringToHash("VelocityZ");
 
     /*
     * FPS specific animator parameters
     */
-    private int m_VelocityHash = Animator.StringToHash("Velocity");
+    private readonly int m_VelocityHash = Animator.StringToHash("Velocity");
 
     private CameraMode m_CurCamMode;
     private float m_CurAimValue = -1f;
@@ -169,6 +170,10 @@ public class PlayerAnimator : MonoBehaviour
         m_Animator.SetBool(m_IsRunningHash, isRunning);
     }
 
+    public void Reload()
+    {
+        m_Animator.CrossFade(m_ReloadStateHash, 0.05f, m_OverlayLayer, 0f);
+    }
 
     // Not called by input handler but player controller to get corrected look input
     public void OnLook(Vector2 look)

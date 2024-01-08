@@ -3,7 +3,8 @@ using UnityEngine.Events;
 
 public class WeaponAnimationEventHandler : MonoBehaviour
 {
-    public UnityAction OnEjectCasing;
+    public UnityAction EjectCasing;
+    public UnityAction ReloadComplete;
 
 
     /*
@@ -11,7 +12,13 @@ public class WeaponAnimationEventHandler : MonoBehaviour
     */
     void OnEject()
     {
-        if (OnEjectCasing != null)
-            OnEjectCasing.Invoke();
+        if (EjectCasing != null)
+            EjectCasing.Invoke();
+    }
+
+    void OnReloadComplete()
+    {
+        if (ReloadComplete != null)
+            ReloadComplete.Invoke();
     }
 }

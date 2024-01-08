@@ -17,21 +17,26 @@ public class Weapon : MonoBehaviour
 
     [SerializeField]
     protected int m_CurAmmo = 30;
-
     [SerializeField]
     protected int m_MaxAmmo = 30;
+    [SerializeField]
+    protected int m_TotalAmmo = 90;
 
     [SerializeField]
     protected AudioClip[] m_FireSounds;
     [SerializeField]
     protected AudioClip m_FireEmptySound;
 
+    [SerializeField]
+    protected AudioClip m_ReloadSound;
+
 
     protected Muzzle m_Muzzle;
     private Animator m_Animator;
     private WeaponAnimationEventHandler m_AnimationEventHandler;
     private AudioManager m_AudioManager;
-    private int m_FireStateHash = Animator.StringToHash("Fire");
+    private readonly int m_FireStateHash = Animator.StringToHash("Fire");
+    private readonly int m_ReloadStateHash = Animator.StringToHash("Reload");
 
 
     public bool IsAutomatic => m_IsAutomatic;
@@ -51,6 +56,14 @@ public class Weapon : MonoBehaviour
         }
     }
 
+    virtual public bool CanReload
+    {
+        get
+        {
+            return State == WeaponState.Idle && m_CurAmmo < m_MaxAmmo && m_TotalAmmo > 0;
+        }
+    }
+
     virtual protected void Awake()
     {
         m_Animator = GetComponentInChildren<Animator>();
@@ -60,7 +73,8 @@ public class Weapon : MonoBehaviour
 
         if (m_AnimationEventHandler != null)
         {
-            m_AnimationEventHandler.OnEjectCasing += EjectCasing;
+            m_AnimationEventHandler.EjectCasing += EjectCasing;
+            m_AnimationEventHandler.ReloadComplete += OnReloadComplete;
         }
     }
 
@@ -93,20 +107,25 @@ public class Weapon : MonoBehaviour
     }
 
 
-    virtual public bool TryFire(Vector3 aimPoint)
+    virtual public WeaponState TryFire(Vector3 aimPoint)
     {
         if (!CanFire)
-            return false;
+            return WeaponState.NotReady;
 
         if (m_CurAmmo <= 0)
         {
-            FireEmpty();
+            if (m_TotalAmmo > 0)
+            {
+                return WeaponState.Reloading;
+            }
+            else
+                FireEmpty();
         }
         else
         {
             Fire(aimPoint);
         }
-        return true;
+        return WeaponState.Firing;
     }
 
     virtual public void Fire(Vector3 aimPoint)
@@ -135,6 +154,9 @@ public class Weapon : MonoBehaviour
 
     virtual public void FireEmpty()
     {
+        m_FireTimer = m_FireCoolDown;
+        State = WeaponState.Firing;
+
         if (m_FireEmptySound != null && m_AudioManager != null)
         {
             m_AudioManager.PlayOneShot(m_FireEmptySound, 0.5f, 1f, transform.position);
@@ -151,6 +173,37 @@ public class Weapon : MonoBehaviour
 
     }
 
+    virtual public bool TryReload()
+    {
+        if (!CanReload)
+            return false;
+
+        Reload();
+
+        return true;
+    }
+
+    virtual public void Reload()
+    {
+        State = WeaponState.Reloading;
+        if (m_Animator != null)
+        {
+            m_Animator.CrossFade(m_ReloadStateHash, 0.05f, 0, 0f);
+        }
+
+        if (m_ReloadSound != null && m_AudioManager != null)
+        {
+            m_AudioManager.PlayOneShot(m_ReloadSound, 0.5f, 1f, transform.position);
+        }
+    }
+
+    virtual public void OnReloadComplete()
+    {
+        State = WeaponState.Idle;
+        int ammoToReload = Mathf.Min(m_MaxAmmo - m_CurAmmo, m_TotalAmmo);
+        m_CurAmmo += ammoToReload;
+        m_TotalAmmo -= ammoToReload;
+    }
 
     virtual public void EjectCasing()
     {
