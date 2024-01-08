@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Weapon : MonoBehaviour
 {
@@ -40,8 +41,27 @@ public class Weapon : MonoBehaviour
 
 
     public bool IsAutomatic => m_IsAutomatic;
-    public int CurAmmo => m_CurAmmo;
     public int MaxAmmo => m_MaxAmmo;
+    public int CurAmmo
+    {
+        get { return m_CurAmmo; }
+        set
+        {
+            m_CurAmmo = value;
+            if (OnAmmoChanged != null)
+                OnAmmoChanged.Invoke(m_CurAmmo, m_TotalAmmo);
+        }
+    }
+    public int TotalAmmo
+    {
+        get { return m_TotalAmmo; }
+        set
+        {
+            m_TotalAmmo = value;
+            if (OnAmmoChanged != null)
+                OnAmmoChanged.Invoke(m_CurAmmo, m_TotalAmmo);
+        }
+    }
     virtual public bool CanFire
     {
         get
@@ -63,6 +83,8 @@ public class Weapon : MonoBehaviour
             return State == WeaponState.Idle && m_CurAmmo < m_MaxAmmo && m_TotalAmmo > 0;
         }
     }
+
+    public UnityAction<int, int> OnAmmoChanged;
 
     virtual protected void Awake()
     {
@@ -103,6 +125,7 @@ public class Weapon : MonoBehaviour
     virtual public void OnUnequip()
     {
         gameObject.SetActive(false);
+        OnAmmoChanged = null;
         State = WeaponState.NotReady;
     }
 
@@ -134,7 +157,7 @@ public class Weapon : MonoBehaviour
             return;
 
         m_FireTimer = m_FireCoolDown;
-        m_CurAmmo--;
+        CurAmmo--;
         State = WeaponState.Firing;
         m_Muzzle.Fire();
 
@@ -201,8 +224,8 @@ public class Weapon : MonoBehaviour
     {
         State = WeaponState.Idle;
         int ammoToReload = Mathf.Min(m_MaxAmmo - m_CurAmmo, m_TotalAmmo);
-        m_CurAmmo += ammoToReload;
-        m_TotalAmmo -= ammoToReload;
+        CurAmmo += ammoToReload;
+        TotalAmmo -= ammoToReload;
     }
 
     virtual public void EjectCasing()

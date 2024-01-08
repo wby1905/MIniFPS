@@ -29,7 +29,7 @@ public class DecalManager : Singleton<DecalManager>
     {
         base.Awake();
         if (m_DecalPrefab != null)
-            m_DecalPool = ObjectPoolManager.Instance.CreateOrGetPool<Decal>(m_DecalPrefab, 10);
+            m_DecalPool = ObjectPoolManager.Instance.CreateOrGetPool<Decal>(m_DecalPrefab, 10, transform);
 
         foreach (var item in m_DecalItems)
         {

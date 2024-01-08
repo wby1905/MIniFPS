@@ -23,20 +23,8 @@ public class CameraManager : Singleton<CameraManager>
     public UnityAction<CameraMode> OnSwitchCam;
 
     public CameraMode CurrentCameraMode { get; private set; }
-    public CinemachineVirtualCamera CurrentVirtualCamera
-    {
-        get
-        {
-            return m_Cameras[CurrentCameraMode];
-        }
-    }
-    public Camera CurrentCamera
-    {
-        get
-        {
-            return m_MainCamera;
-        }
-    }
+    public CinemachineVirtualCamera CurrentVirtualCamera => m_Cameras[CurrentCameraMode];
+    public Camera CurrentCamera => m_MainCamera;
     private Camera m_MainCamera;
 
 

@@ -1,5 +1,6 @@
 using Cinemachine;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Video;
 
 public class PlayerController : MonoBehaviour
@@ -72,9 +73,16 @@ public class PlayerController : MonoBehaviour
     private int m_WeaponIdx = 0;
     public float SwitchCoolDown = 0.5f;
     private float m_SwitchTimer = 0f;
-
-
     private Weapon m_CurWeapon;
+    public Weapon CurWeapon => m_CurWeapon;
+
+
+    /**
+    * Events
+    */
+    public UnityAction<Weapon> OnWeaponSwitched;
+
+
 
     void Awake()
     {
@@ -403,6 +411,8 @@ public class PlayerController : MonoBehaviour
         }
 
         m_CurWeapon = m_Inventory.CurrentWeapon;
+        if (OnWeaponSwitched != null)
+            OnWeaponSwitched.Invoke(m_CurWeapon);
     }
 
     void OnReloadComplete()
@@ -443,6 +453,13 @@ public class PlayerController : MonoBehaviour
             m_CurIKHandler.LeftHandPole = curWeapon.LeftHandPole;
             m_CurIKHandler.RightHandTarget = curWeapon.RightHandTarget;
             m_CurIKHandler.RightHandPole = curWeapon.RightHandPole;
+        }
+        else
+        {
+            m_CurIKHandler.LeftHandTarget = null;
+            m_CurIKHandler.LeftHandPole = null;
+            m_CurIKHandler.RightHandTarget = null;
+            m_CurIKHandler.RightHandPole = null;
         }
     }
 
