@@ -37,7 +37,7 @@ public class AudioManager : Singleton<AudioManager>
                 m_AudioClipsDict.Add(audioTypeClip.audioType, audioTypeClip.audioClips);
         }
 
-        m_AudioPool = ObjectPoolManager.Instance.CreateOrGetPool<AudioPoolItem>(m_AudioPoolItemPrefab, 10);
+        m_AudioPool = ObjectPoolManager.Instance.CreateOrGetPool<AudioPoolItem>(m_AudioPoolItemPrefab, 10, transform);
     }
 
     public AudioPoolItem PlayOneShot(AudioClip clip, float volume = 1, float pitch = 1, Vector3 position = default, float delay = 0f, bool isLoop = false)
@@ -45,6 +45,7 @@ public class AudioManager : Singleton<AudioManager>
         if (clip == null || m_AudioPool == null)
             return null;
         AudioPoolItem audioPoolItem = m_AudioPool.Get();
+        audioPoolItem.SetPool(m_AudioPool);
         if (audioPoolItem == null)
             return null;
         audioPoolItem.transform.position = position;
