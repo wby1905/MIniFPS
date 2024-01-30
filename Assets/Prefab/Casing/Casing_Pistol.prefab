@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 23767043221971756}
   - component: {fileID: 54238244902362926}
   - component: {fileID: 7827193852405411653}
-  - component: {fileID: 114121961160874846}
+  - component: {fileID: 6469621483705423893}
   m_Layer: 9
   m_Name: Casing_Pistol
   m_TagString: Untagged
@@ -105,13 +105,13 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1492315059354262}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: b0877075a77e76049b7c257a27fcec73, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.010220759, y: 0.010220901, z: 0.022174282}
   m_Center: {x: 4.656613e-10, y: -0.000000025844207, z: 0.0016738329}
---- !u!114 &114121961160874846
+--- !u!114 &6469621483705423893
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -120,7 +120,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 1492315059354262}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76508747c1020fd4c91ca92f50556307, type: 3}
+  m_Script: {fileID: 11500000, guid: cd01c77aa4d86bd499edb8062c6de27a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_LifeTime: 2
+  controllerNames:
+  - Casing

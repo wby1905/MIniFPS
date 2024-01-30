@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Weapon : MonoBehaviour
+public class Weapon : ActorController
 {
     public Transform LeftHandTarget, RightHandTarget;
     public Transform LeftHandPole, RightHandPole;
@@ -9,26 +9,17 @@ public class Weapon : MonoBehaviour
     public WeaponState State { get; protected set; }
     public WeaponType Type { get; set; }
 
-    [SerializeField]
     protected bool m_IsAutomatic = false;
-    [SerializeField]
     protected float m_FireCoolDown = 0.25f;
     protected float m_FireTimer = 0f;
 
 
-    [SerializeField]
     protected int m_CurAmmo = 30;
-    [SerializeField]
     protected int m_MaxAmmo = 30;
-    [SerializeField]
     protected int m_TotalAmmo = 90;
 
-    [SerializeField]
     protected AudioClip[] m_FireSounds;
-    [SerializeField]
     protected AudioClip m_FireEmptySound;
-
-    [SerializeField]
     protected AudioClip m_ReloadSound;
 
 
@@ -86,10 +77,32 @@ public class Weapon : MonoBehaviour
 
     public UnityAction<int, int> OnAmmoChanged;
 
-    virtual protected void Awake()
+    public override void ConfigData(ActorData data)
     {
+        base.ConfigData(data);
+        WeaponData wd = data as WeaponData;
+        if (wd != null)
+        {
+            LeftHandTarget = actorBehaviour.FindChild(wd.LeftHandTarget);
+            RightHandTarget = actorBehaviour.FindChild(wd.RightHandTarget);
+            LeftHandPole = actorBehaviour.FindChild(wd.LeftHandPole);
+            RightHandPole = actorBehaviour.FindChild(wd.RightHandPole);
+            m_IsAutomatic = wd.IsAutomatic;
+            m_FireCoolDown = wd.FireCoolDown;
+            m_CurAmmo = wd.CurAmmo;
+            m_MaxAmmo = wd.MaxAmmo;
+            m_TotalAmmo = wd.TotalAmmo;
+            m_FireSounds = wd.FireSounds;
+            m_FireEmptySound = wd.FireEmptySound;
+            m_ReloadSound = wd.ReloadSound;
+        }
+    }
+
+    protected override void Awake()
+    {
+        base.Awake();
         m_Animator = GetComponentInChildren<Animator>();
-        m_Muzzle = GetComponentInChildren<Muzzle>();
+        m_Muzzle = GetControllerInChildren<Muzzle>();
         m_AnimationEventHandler = GetComponentInChildren<WeaponAnimationEventHandler>();
         m_AudioManager = AudioManager.Instance;
 
@@ -100,8 +113,19 @@ public class Weapon : MonoBehaviour
         }
     }
 
-    virtual protected void Update()
+    protected override void OnDestroy()
     {
+        base.OnDestroy();
+        if (m_AnimationEventHandler != null)
+        {
+            m_AnimationEventHandler.EjectCasing -= EjectCasing;
+            m_AnimationEventHandler.ReloadComplete -= OnReloadComplete;
+        }
+    }
+
+    protected override void Update()
+    {
+        base.Update();
         if (m_FireTimer > 0f)
             m_FireTimer -= Time.deltaTime;
         else if (State == WeaponState.Firing)
@@ -110,7 +134,7 @@ public class Weapon : MonoBehaviour
         }
     }
 
-    virtual public void Init()
+    virtual public void InitWeapon()
     {
         State = WeaponState.NotReady;
         gameObject.SetActive(false);
@@ -233,11 +257,4 @@ public class Weapon : MonoBehaviour
 
     }
 
-
-#if UNITY_EDITOR
-    void OnDrawGizmos()
-    {
-
-    }
-#endif
 }

@@ -22,9 +22,9 @@ public class AudioManager : Singleton<AudioManager>
     private Dictionary<AudioType, AudioClip[]> m_AudioClipsDict = new Dictionary<AudioType, AudioClip[]>();
 
     [SerializeField]
-    private AudioPoolItem m_AudioPoolItemPrefab;
+    private ActorBehaviour m_AudioPoolItemPrefab;
 
-    private ObjectPool<AudioPoolItem> m_AudioPool;
+    private ObjectPool<AudioActor> m_AudioPool;
 
 
     protected override void Awake()
@@ -37,23 +37,23 @@ public class AudioManager : Singleton<AudioManager>
                 m_AudioClipsDict.Add(audioTypeClip.audioType, audioTypeClip.audioClips);
         }
 
-        m_AudioPool = ObjectPoolManager.Instance.CreateOrGetPool<AudioPoolItem>(m_AudioPoolItemPrefab, 10, transform);
+        m_AudioPool = ObjectPoolManager.Instance.CreateOrGetPool<AudioActor>(m_AudioPoolItemPrefab, 10, transform);
     }
 
-    public AudioPoolItem PlayOneShot(AudioClip clip, float volume = 1, float pitch = 1, Vector3 position = default, float delay = 0f, bool isLoop = false)
+    public AudioActor PlayOneShot(AudioClip clip, float volume = 1, float pitch = 1, Vector3 position = default, float delay = 0f, bool isLoop = false)
     {
         if (clip == null || m_AudioPool == null)
             return null;
-        AudioPoolItem audioPoolItem = m_AudioPool.Get();
-        audioPoolItem.SetPool(m_AudioPool);
-        if (audioPoolItem == null)
+        AudioActor audioActor = m_AudioPool.Get();
+        audioActor.SetPool(m_AudioPool);
+        if (audioActor == null)
             return null;
-        audioPoolItem.transform.position = position;
-        audioPoolItem.Play(clip, volume, pitch, delay, isLoop);
-        return audioPoolItem;
+        audioActor.transform.position = position;
+        audioActor.Play(clip, volume, pitch, delay, isLoop);
+        return audioActor;
     }
 
-    public AudioPoolItem PlayOneShot(AudioType audioType, float volume = 1, float pitch = 1, Vector3 position = default, float delay = 0f, bool isLoop = false)
+    public AudioActor PlayOneShot(AudioType audioType, float volume = 1, float pitch = 1, Vector3 position = default, float delay = 0f, bool isLoop = false)
     {
         if (!m_AudioClipsDict.ContainsKey(audioType))
             return null;

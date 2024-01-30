@@ -10,10 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6414628012321939765}
   - component: {fileID: 3685582188041187326}
-  - component: {fileID: 6775209644375848736}
-  - component: {fileID: 853868078078848672}
-  - component: {fileID: 5052008473000847046}
-  - component: {fileID: 3165810557025112026}
+  - component: {fileID: 2334837486403477153}
   m_Layer: 9
   m_Name: Player
   m_TagString: Player
@@ -57,7 +54,7 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0
   m_Center: {x: 0, y: 0.88, z: 0}
---- !u!114 &6775209644375848736
+--- !u!114 &2334837486403477153
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -66,73 +63,51 @@ MonoBehaviour:
   m_GameObject: {fileID: 4634163054130379226}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1aaee09e87d56e4fa7510d9e79b2ec5, type: 3}
+  m_Script: {fileID: 11500000, guid: 5748e9e1c664bad44b4b9517cf989c15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &853868078078848672
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4634163054130379226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2226ad18f2a03504988f0ba86d61b420, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_LerpSpeed: 200
-  m_LookError: 5
-  m_AimSpeed: 5
+  controllerNames:
+  - InputHandler
+  - PlayerAnimator
+  - PlayerController
+  - PlayerInventory
+  - HUD
+  LerpSpeed: 5
+  LookError: 5
+  AimSpeed: 5
   FPSModel: {fileID: 4012919284534065771}
   TPSModel: {fileID: 4652162316806400527}
---- !u!114 &5052008473000847046
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4634163054130379226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d529f87ae874344e8bbc1eb98239696, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  WeaponTable: {fileID: 11400000, guid: db5497856f499ba4a82038a66643ef26, type: 2}
-  InitialWeapons: 0100000000000000
-  StartWeaponIndex: 0
-  WeaponSocket: {fileID: 6181645307588373714}
-  MaxWeaponCount: 2
-  FPS_WeaponSocket: {fileID: 6181645307588373714}
-  TPS_WeaponSocket: {fileID: 1088904408531907935}
---- !u!114 &3165810557025112026
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4634163054130379226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a5a39d25a07d434080f9e189f54ecc8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
   FPSAnimationEventHandler: {fileID: 1195643808699438581}
   TPSAnimationEventHandler: {fileID: 7810730412523444940}
   FPSIKHandler: {fileID: 579344853435795440}
   TPSIKHandler: {fileID: 5016627362659386433}
   GroundSpeed: 5
-  RunSpeed: 2
-  LookSpeed: 100
+  RunSpeed: 10
+  LookSpeed: 200
   LookPitchLimit: 60
   JumpSpeed: 5
-  m_FPSAimOffset: {x: 0.18, y: 0, z: 0}
-  m_AimDuration: 0.2
+  FPSAimOffset: {x: -10, y: 0, z: 0}
+  FPSAimOffsetTop: {x: 0, y: 0.08, z: 0}
+  FPSAimOffsetBottom: {x: 0, y: -0.1, z: 0}
   HitLayerMask:
     serializedVersion: 2
-    m_Bits: 279
+    m_Bits: 1
   HitDistance: 1000
   SwitchCoolDown: 0.5
+  m_CurAmmoText: {fileID: 0}
+  m_TotalAmmoText: {fileID: 0}
+  m_WeaponNameText: {fileID: 0}
+  m_WeaponIcon: {fileID: 0}
+  m_MagazineIcon: {fileID: 0}
+  m_CasingIcon: {fileID: 0}
+  m_WeaponUIPresets:
+  - {fileID: 11400000, guid: 3b71c15c752b9274e914639dc5b77e9f, type: 2}
+  - {fileID: 11400000, guid: c9f0783d6e9795e49826b6a6f5f25206, type: 2}
+  WeaponTable: {fileID: 11400000, guid: db5497856f499ba4a82038a66643ef26, type: 2}
+  InitialWeapons: 0000000001000000
+  StartWeaponIndex: 0
+  FPS_WeaponSocket: {fileID: 6181645307588373714}
+  TPS_WeaponSocket: {fileID: 1088904408531907935}
 --- !u!1 &6084910313717544701
 GameObject:
   m_ObjectHideFlags: 0
@@ -435,7 +410,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8271314248308779917}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.7642924, y: 1.82, z: -1.38}
+  m_LocalPosition: {x: -0.62968427, y: 1.82, z: -1.38}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5949748531089172009}

@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6828612418341077819}
-  - component: {fileID: 2659413747066634396}
   - component: {fileID: 322407058577615822}
+  - component: {fileID: 5943742396314453429}
   m_Layer: 0
   m_Name: AudioPoolItem
   m_TagString: Untagged
@@ -32,18 +32,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2659413747066634396
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4735723985881401479}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 166cba83e920e104490d0f3573849e74, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!82 &322407058577615822
 AudioSource:
   m_ObjectHideFlags: 0
@@ -140,3 +128,17 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &5943742396314453429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4735723985881401479}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd01c77aa4d86bd499edb8062c6de27a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controllerNames:
+  - AudioActor

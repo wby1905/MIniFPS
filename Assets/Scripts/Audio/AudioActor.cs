@@ -1,18 +1,23 @@
 using UnityEngine;
 
-public class AudioPoolItem : MonoBehaviour, IPoolable
+public class AudioActor : ActorController, IPoolable
 {
     private AudioSource m_AudioSource;
-    private ObjectPool<AudioPoolItem> m_Pool;
+    private ObjectPool<AudioActor> m_Pool;
 
     public AudioSource AudioSource => m_AudioSource;
     public bool IsPlaying => m_AudioSource.isPlaying;
-
-
-    void Update()
+    protected override void Update()
     {
+        base.Update();
         if (!m_AudioSource.isPlaying)
             Recycle();
+    }
+
+    public override void Init(ActorBehaviour poolItem)
+    {
+        base.Init(poolItem);
+        m_AudioSource = GetComponent<AudioSource>();
     }
 
     public void OnInit()
@@ -46,7 +51,7 @@ public class AudioPoolItem : MonoBehaviour, IPoolable
         Recycle();
     }
 
-    public void SetPool(ObjectPool<AudioPoolItem> pool)
+    public void SetPool(ObjectPool<AudioActor> pool)
     {
         m_Pool = pool;
     }
@@ -56,7 +61,6 @@ public class AudioPoolItem : MonoBehaviour, IPoolable
         if (m_Pool != null)
             m_Pool.Recycle(this);
         else
-            Destroy(gameObject);
+            Destroy(this);
     }
-
 }

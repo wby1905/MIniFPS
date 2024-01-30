@@ -8,50 +8,63 @@ public interface IPoolable
     void OnRecycle();
 }
 
-public class ObjectPool<T> where T : MonoBehaviour, IPoolable
+public class ObjectPool<T> where T : ActorController, IPoolable, new()
 {
-    private T m_Prefab;
+    private ActorBehaviour m_Prefab;
     private Transform m_Parent;
     private Stack<T> m_Pool = new Stack<T>();
 
     public int Count { get; private set; }
 
-    public void Init(T prefab, Transform parent, int count)
+    public void Init(ActorBehaviour prefab, Transform parent, int count)
     {
         m_Prefab = prefab;
         m_Parent = parent;
         for (int i = 0; i < count; i++)
         {
-            T obj = GameObject.Instantiate(m_Prefab, m_Parent);
-            obj.gameObject.SetActive(false);
-            obj.name = $"{m_Prefab.name} {i}";
-            m_Pool.Push(obj);
+            var ab = WorldManager.Instantiate(m_Prefab, m_Parent, false);
+            var controller = ab.GetController<T>();
+            if (controller == null)
+            {
+                controller = ab.AddController<T>();
+                controller.Invoke();
+            }
+            controller.gameObject.name = $"{m_Prefab.name} {i}";
+            m_Pool.Push(controller);
         }
         Count = count;
     }
 
     public T Get()
     {
-        T obj;
+        T controller;
         if (m_Pool.Count == 0)
         {
-            obj = m_Pool.Count > 0 ? m_Pool.Pop() : GameObject.Instantiate(m_Prefab, m_Parent);
-            obj.name = $"{m_Prefab.name} {Count}";
+            var ab = WorldManager.Instantiate(m_Prefab, m_Parent, false);
+            controller = ab.GetController<T>();
+            if (controller == null)
+            {
+                controller = ab.AddController<T>();
+                controller.Invoke();
+            }
+            controller.gameObject.name = $"{m_Prefab.name} {Count}";
             Count++;
         }
         else
         {
-            obj = m_Pool.Pop();
+            controller = m_Pool.Pop();
+            if (controller == null)
+                return Get();
         }
-        obj.gameObject.SetActive(true);
-        obj.OnInit();
-        return obj;
+        controller.SetActive(true);
+        controller.OnInit();
+        return controller;
     }
 
     public void Recycle(T obj)
     {
         obj.OnRecycle();
-        obj.gameObject.SetActive(false);
+        obj.SetActive(false);
         obj.transform.SetParent(m_Parent);
         obj.transform.localPosition = Vector3.zero;
         obj.transform.localRotation = Quaternion.identity;

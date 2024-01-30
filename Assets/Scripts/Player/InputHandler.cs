@@ -2,7 +2,7 @@
 using Cinemachine;
 using UnityEngine.Events;
 
-public class InputHandler : MonoBehaviour
+public class InputHandler : ActorController
 {
     public UnityAction<Vector2> OnMove;
     public UnityAction<Vector2> OnLook;
@@ -24,10 +24,11 @@ public class InputHandler : MonoBehaviour
     public Vector2 MoveInput => m_PlayerControl.gameplay.Move.ReadValue<Vector2>();
     public Vector2 LookInput => m_PlayerControl.gameplay.Look.ReadValue<Vector2>();
 
-    void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         m_PlayerControl = new PlayerControl();
-        m_PlayerController = GetComponent<PlayerController>();
+        m_PlayerController = GetController<PlayerController>();
         m_CameraManager = CameraManager.Instance;
 
         /**
@@ -55,23 +56,28 @@ public class InputHandler : MonoBehaviour
 
     }
 
-    void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
         m_PlayerControl.Enable();
     }
 
-    void OnDisable()
+    protected override void OnDisable()
     {
+        base.OnDisable();
         m_PlayerControl.Disable();
     }
 
-    void Start()
+    protected override void Start()
     {
+        base.Start();
         // Hide the cursor
         if (m_PlayerControl.gameplay.enabled)
         {
+            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+
         }
 
     }

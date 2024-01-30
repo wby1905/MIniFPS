@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Inventory : MonoBehaviour
+public class Inventory : ActorController
 {
-    public WeaponMap WeaponTable;
+    protected WeaponMap m_WeaponTable;
 
-    public List<WeaponType> InitialWeapons;
-    public int StartWeaponIndex = 0;
+    protected List<WeaponType> m_InitialWeapons;
+    protected int m_StartWeaponIndex = 0;
     public bool IsEquipped => m_CurIdx >= 0 && m_CurIdx < m_Weapons.Count && m_Weapons[m_CurIdx] != null;
     public Weapon CurrentWeapon
     {
@@ -31,21 +31,24 @@ public class Inventory : MonoBehaviour
     protected List<Weapon> m_Weapons = new List<Weapon>();
 
 
-    protected virtual void Awake()
+    protected override void Awake()
     {
-        foreach (var weaponType in InitialWeapons)
+        base.Awake();
+
+        foreach (var weaponType in m_InitialWeapons)
         {
-            var weapon = Instantiate(WeaponTable.WeaponDic[weaponType], transform).GetComponent<Weapon>();
+            var weapon = WorldManager.Instantiate(m_WeaponTable.WeaponDic[weaponType], transform, false).GetController<Weapon>();
             weapon.Type = weaponType;
-            weapon.Init();
+            weapon.InitWeapon();
             m_Weapons.Add(weapon);
         }
 
     }
 
-    protected virtual void Start()
+    protected override void Start()
     {
-        EquipWeapon(StartWeaponIndex);
+        base.Start();
+        EquipWeapon(m_StartWeaponIndex);
     }
 
     public virtual Weapon EquipWeapon(int index)

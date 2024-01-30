@@ -123,4 +123,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8248da9706073b4cb4c1efc41065edf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_LifeTime: 10
+  controllerNames:
+  - DecalActor
+  LifeTime: 10

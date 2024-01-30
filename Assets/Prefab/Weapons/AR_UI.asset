@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: AR_UI
   m_EditorClassIdentifier: 
   WeaponIcon: {fileID: 21300000, guid: bcc477d9e47ffcf41acc147a6fc51cf9, type: 3}
+  MagazineIcon: {fileID: 21300000, guid: 51d720b69910c244aa44a082bddf0155, type: 3}
   CasingIcon: {fileID: 21300000, guid: 6f0c382f6b0028e42acffc5ac48b578b, type: 3}
   WeaponName: AR
   WeaponType: 1

@@ -3,21 +3,28 @@ using UnityEngine;
 public class ProjectileWeapon : Weapon
 {
 
-    [SerializeField]
     protected Transform m_Ejection;
-
-    [SerializeField]
-    protected Projectile m_ProjectilePrefab;
-
-    [SerializeField]
-    protected Casing m_CasingPrefab;
+    protected ProjectileBehaviour m_ProjectilePrefab;
+    protected ActorBehaviour m_CasingPrefab;
 
     private ObjectPool<Projectile> m_ProjectilePool;
     private ObjectPool<Casing> m_CasingPool;
 
-    public override void Init()
+    public override void ConfigData(ActorData data)
     {
-        base.Init();
+        base.ConfigData(data);
+        ProjectileWeaponData pwd = data as ProjectileWeaponData;
+        if (pwd != null)
+        {
+            m_Ejection = actorBehaviour.FindChild(pwd.Ejection);
+            m_ProjectilePrefab = pwd.ProjectilePrefab;
+            m_CasingPrefab = pwd.CasingPrefab;
+        }
+    }
+
+    public override void InitWeapon()
+    {
+        base.InitWeapon();
         if (m_ProjectilePrefab != null)
             m_ProjectilePool = ObjectPoolManager.Instance.CreateOrGetPool<Projectile>(m_ProjectilePrefab, 10);
 

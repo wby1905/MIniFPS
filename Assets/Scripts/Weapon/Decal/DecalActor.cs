@@ -1,11 +1,10 @@
 using UnityEngine;
 
-public class Decal : MonoBehaviour, IPoolable
+public class DecalActor : ActorController, IPoolable
 {
-    public ObjectPool<Decal> DecalPool { get; set; }
+    public ObjectPool<DecalActor> DecalPool { get; set; }
 
-    [SerializeField]
-    private float m_LifeTime = 10f;
+    private float m_LifeTime;
 
     private float m_Timer = 0f;
 
@@ -13,19 +12,29 @@ public class Decal : MonoBehaviour, IPoolable
 
     public void Spawn(Material mat, Vector3 position, Quaternion rotation)
     {
+        if (!HasInit) return;
         transform.position = position;
         transform.rotation = rotation;
         if (m_MeshRenderer != null)
             m_MeshRenderer.material = mat;
     }
 
-    void Awake()
+    public override void Init(ActorBehaviour mono)
     {
+        DecalBehaviour decal = mono as DecalBehaviour;
+        if (decal == null) return;
+        base.Init(mono);
+        m_LifeTime = decal.LifeTime;
+    }
+
+    protected override void Awake()
+    {
+        base.Awake();
         m_Timer = 0f;
         m_MeshRenderer = GetComponentInChildren<MeshRenderer>();
     }
 
-    void Update()
+    protected override void Update()
     {
         m_Timer += Time.deltaTime;
         if (m_Timer >= m_LifeTime)
@@ -40,7 +49,7 @@ public class Decal : MonoBehaviour, IPoolable
         if (DecalPool != null)
             DecalPool.Recycle(this);
         else
-            Destroy(gameObject);
+            Destroy(this);
     }
 
     public void OnInit()

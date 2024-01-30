@@ -9,7 +9,7 @@ public enum DecalType
 
 public class DecalManager : Singleton<DecalManager>
 {
-    private ObjectPool<Decal> m_DecalPool;
+    private ObjectPool<DecalActor> m_DecalPool;
 
     [System.Serializable]
     class DecalItem
@@ -23,13 +23,13 @@ public class DecalManager : Singleton<DecalManager>
     private Dictionary<DecalType, DecalItem> m_DecalItemDict = new Dictionary<DecalType, DecalItem>();
 
     [SerializeField]
-    private Decal m_DecalPrefab;
+    private DecalBehaviour m_DecalPrefab;
 
     protected override void Awake()
     {
         base.Awake();
         if (m_DecalPrefab != null)
-            m_DecalPool = ObjectPoolManager.Instance.CreateOrGetPool<Decal>(m_DecalPrefab, 10, transform);
+            m_DecalPool = ObjectPoolManager.Instance.CreateOrGetPool<DecalActor>(m_DecalPrefab, 10, transform);
 
         foreach (var item in m_DecalItems)
         {
@@ -40,16 +40,14 @@ public class DecalManager : Singleton<DecalManager>
 
     public void SpawnDecal(DecalType decalType, Vector3 position, Quaternion rotation)
     {
+        if (!m_DecalItemDict.ContainsKey(decalType)) return;
         if (m_DecalPool != null)
         {
-            Decal decal = m_DecalPool.Get();
+            DecalActor decal = m_DecalPool.Get();
             if (decal != null)
             {
                 decal.DecalPool = m_DecalPool;
-                if (m_DecalItemDict.ContainsKey(decalType))
-                {
-                    decal.Spawn(m_DecalItemDict[decalType].material, position, rotation);
-                }
+                decal.Spawn(m_DecalItemDict[decalType].material, position, rotation);
             }
         }
     }

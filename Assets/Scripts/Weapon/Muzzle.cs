@@ -1,24 +1,13 @@
 using UnityEngine;
 
-public class Muzzle : MonoBehaviour
+public class Muzzle : ActorController
 {
 
-    [SerializeField]
     private Transform m_Socket;
-
-    [SerializeField]
     private GameObject m_PrefabFlashParticles;
-
-    [SerializeField]
     private int m_FlashParticlesCount = 5;
-
-    [SerializeField]
     private GameObject m_PrefabFlashLight;
-
-    [SerializeField]
     private float m_FlashLightDuration;
-
-    [SerializeField]
     private Vector3 m_FlashLightOffset;
 
 
@@ -28,24 +17,48 @@ public class Muzzle : MonoBehaviour
 
     public Transform Socket => m_Socket;
 
-    void Awake()
+    public override void ConfigData(ActorData data)
     {
+        if (data is WeaponData wd) ConfigData(wd.muzzleData);
+        base.ConfigData(data);
+        MuzzleData md = data as MuzzleData;
+        if (md != null)
+        {
+            m_Socket = actorBehaviour.FindChild(md.SocketName);
+#if UNITY_EDITOR
+            if (m_Socket == null)
+            {
+                Debug.LogError("MuzzleData SocketName is not found");
+            }
+#endif
+            m_PrefabFlashParticles = md.PrefabFlashParticles;
+            m_FlashParticlesCount = md.FlashParticlesCount;
+            m_PrefabFlashLight = md.PrefabFlashLight;
+            m_FlashLightDuration = md.FlashLightDuration;
+            m_FlashLightOffset = md.FlashLightOffset;
+        }
+    }
+
+    protected override void Awake()
+    {
+        base.Awake();
         if (m_PrefabFlashParticles != null)
         {
-            m_Particles = Instantiate(m_PrefabFlashParticles, m_Socket).GetComponent<ParticleSystem>();
+            m_Particles = GameObject.Instantiate(m_PrefabFlashParticles, m_Socket).GetComponent<ParticleSystem>();
             m_Particles.transform.localPosition = default;
         }
 
         if (m_PrefabFlashLight != null)
         {
-            m_FlashLight = Instantiate(m_PrefabFlashLight, m_Socket).GetComponent<Light>();
+            m_FlashLight = GameObject.Instantiate(m_PrefabFlashLight, m_Socket).GetComponent<Light>();
             m_FlashLight.transform.localPosition = m_FlashLightOffset;
             m_FlashLight.enabled = false;
         }
     }
 
-    void Update()
+    protected override void Update()
     {
+        base.Update();
         if (m_FlashLightTimer > 0f)
         {
             m_FlashLightTimer -= Time.deltaTime;

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 54704279786675872}
   - component: {fileID: 65871565580582628}
   - component: {fileID: 96448838451407516}
-  - component: {fileID: 114243545424532484}
+  - component: {fileID: 4570466485586570219}
   m_Layer: 10
   m_Name: Bullet_01
   m_TagString: Untagged
@@ -171,7 +171,7 @@ TrailRenderer:
   m_MinVertexDistance: 0.1
   m_Autodestruct: 0
   m_Emitting: 1
---- !u!114 &114243545424532484
+--- !u!114 &4570466485586570219
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -180,13 +180,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1086664671600574}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02e43065eaea1ee4880b6a28b0e2b32e, type: 3}
+  m_Script: {fileID: 11500000, guid: acce34c3a414f15469dd138f89258754, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Damage: 10
-  m_InitialSpeed: 10
-  m_LifeTime: 5
-  m_UseGravity: 1
+  controllerNames:
+  - RigidBullet
+  Damage: 10
+  InitialSpeed: 10
+  LifeTime: 5
+  UseGravity: 1
 --- !u!1 &1231345400216816
 GameObject:
   m_ObjectHideFlags: 0

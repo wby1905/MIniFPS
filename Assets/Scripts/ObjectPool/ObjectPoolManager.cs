@@ -5,7 +5,7 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
 {
     private Dictionary<string, object> m_Pools = new Dictionary<string, object>();
 
-    public ObjectPool<T> CreateOrGetPool<T>(T prefab, int count, Transform parent = null) where T : MonoBehaviour, IPoolable
+    public ObjectPool<T> CreateOrGetPool<T>(ActorBehaviour prefab, int count, Transform parent = null) where T : ActorController, IPoolable, new()
     {
         string key = prefab.name;
         if (m_Pools.ContainsKey(key))

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: PIstol_UI
   m_EditorClassIdentifier: 
   WeaponIcon: {fileID: 21300000, guid: 5de2ff934a8b3ea4ebfe923a6f958686, type: 3}
+  MagazineIcon: {fileID: 21300000, guid: d96558cda50c04347b69780fd84c6fc9, type: 3}
   CasingIcon: {fileID: 21300000, guid: 05eed02da32c8af408daa679615ae3ba, type: 3}
   WeaponName: Pistol
   WeaponType: 0

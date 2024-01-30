@@ -8,19 +8,19 @@ public class WeaponMap : ScriptableObject
     public struct WeaponTable
     {
         public WeaponType Type;
-        public GameObject WeaponPrefab;
+        public WeaponData WeaponPrefab;
     }
 
     [SerializeField]
     private WeaponTable[] WeaponPrefabs;
 
-    public Dictionary<WeaponType, GameObject> WeaponDic
+    public Dictionary<WeaponType, WeaponData> WeaponDic
     {
         get
         {
             if (m_WeaponDic == null)
             {
-                m_WeaponDic = new Dictionary<WeaponType, GameObject>();
+                m_WeaponDic = new Dictionary<WeaponType, WeaponData>();
                 foreach (var weapon in WeaponPrefabs)
                 {
                     if (m_WeaponDic.ContainsKey(weapon.Type))
@@ -32,5 +32,5 @@ public class WeaponMap : ScriptableObject
 
         }
     }
-    private Dictionary<WeaponType, GameObject> m_WeaponDic;
+    private Dictionary<WeaponType, WeaponData> m_WeaponDic;
 }

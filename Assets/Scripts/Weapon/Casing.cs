@@ -1,8 +1,7 @@
 using UnityEngine;
 
-public class Casing : MonoBehaviour, IPoolable
+public class Casing : ActorController, IPoolable
 {
-    [SerializeField]
     private float m_LifeTime = 2f;
     private float m_LifeTimer = 0f;
 
@@ -10,15 +9,16 @@ public class Casing : MonoBehaviour, IPoolable
     private Collider m_Collider;
     public ObjectPool<Casing> CasingPool { get; set; }
 
-
-    void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         m_Rigidbody = GetComponent<Rigidbody>();
         m_Collider = GetComponent<Collider>();
     }
 
-    void Update()
+    protected override void Update()
     {
+        base.Update();
         if (m_LifeTimer > 0f)
         {
             m_LifeTimer -= Time.deltaTime;
@@ -29,13 +29,13 @@ public class Casing : MonoBehaviour, IPoolable
         }
     }
 
-    void OnCollisionEnter(Collision collision)
+    public override void OnCollisionEnter(Collision collision)
     {
+        base.OnCollisionEnter(collision);
         float volume = Random.Range(0.2f, 0.4f);
         float pitch = Random.Range(0.8f, 1.2f);
         AudioManager.Instance.PlayOneShot(AudioType.Casing, volume, pitch, transform.position);
 
-        Recycle();
     }
 
     public void Eject(Vector3 startPos, Vector3 direction)
@@ -45,7 +45,7 @@ public class Casing : MonoBehaviour, IPoolable
         Vector3 rndPoint = Random.insideUnitSphere * 1f;
         Vector3 rndDir = (direction + rndPoint).normalized;
 
-        m_Rigidbody.velocity = rndDir * Random.Range(0.5f, 1.5f);
+        m_Rigidbody.velocity = rndDir * Random.Range(2.5f, 4.5f);
         m_Collider.enabled = true;
 
         m_LifeTimer = m_LifeTime;
@@ -56,7 +56,7 @@ public class Casing : MonoBehaviour, IPoolable
         if (CasingPool != null)
             CasingPool.Recycle(this);
         else
-            Destroy(gameObject);
+            Destroy(this);
     }
 
     public void OnInit()

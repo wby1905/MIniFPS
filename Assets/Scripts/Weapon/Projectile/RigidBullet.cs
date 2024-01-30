@@ -3,13 +3,8 @@ using UnityEngine;
 
 public class RigidBullet : Projectile
 {
-    [SerializeField]
     protected float m_InitialSpeed = 10f;
-
-    [SerializeField]
     protected float m_LifeTime = 5f;
-
-    [SerializeField]
     protected bool m_UseGravity = true;
 
     protected Rigidbody m_Rigidbody;
@@ -18,8 +13,20 @@ public class RigidBullet : Projectile
 
     private float m_LifeTimer = 0f;
 
+    public override void Init(ActorBehaviour ab)
+    {
+        RigidBulletBehaviour bb = ab as RigidBulletBehaviour;
+        if (bb == null) return;
+        base.Init(ab);
+        m_Damage = bb.Damage;
+        m_InitialSpeed = bb.InitialSpeed;
+        m_LifeTime = bb.LifeTime;
+        m_UseGravity = bb.UseGravity;
+    }
+
     protected override void Awake()
     {
+        base.Awake();
         m_Rigidbody = GetComponent<Rigidbody>();
         m_Collider = GetComponent<Collider>();
         m_TrailRenderer = GetComponent<TrailRenderer>();
@@ -27,6 +34,7 @@ public class RigidBullet : Projectile
 
     protected override void Update()
     {
+        base.Update();
         if (m_LifeTimer > 0f)
         {
             m_LifeTimer -= Time.deltaTime;
@@ -48,8 +56,9 @@ public class RigidBullet : Projectile
         m_LifeTimer = m_LifeTime;
     }
 
-    protected virtual void OnCollisionEnter(Collision other)
+    public override void OnCollisionEnter(Collision other)
     {
+        base.OnCollisionEnter(other);
         Vector3 impactPoint = other.contacts[0].point;
         Vector3 impactNormal = other.contacts[0].normal;
         DecalManager.Instance.SpawnDecal(DecalType.BulletHole,
@@ -69,7 +78,7 @@ public class RigidBullet : Projectile
         if (ProjectilePool != null)
             ProjectilePool.Recycle(this);
         else
-            Destroy(gameObject);
+            Destroy(this);
     }
 
     public override void OnInit()
@@ -84,14 +93,4 @@ public class RigidBullet : Projectile
         m_TrailRenderer.Clear();
     }
 
-#if UNITY_EDITOR
-    void OnDrawGizmos()
-    {
-        if (m_Rigidbody != null)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawRay(transform.position, m_Rigidbody.velocity);
-        }
-    }
-#endif
 }

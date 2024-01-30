@@ -1,21 +1,18 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class PlayerAnimator : MonoBehaviour
+public class PlayerAnimator : ActorController
 {
-
     private Animator m_Animator;
     private CharacterController m_CharacterController;
+    private CameraManager m_CameraManager;
 
-    [SerializeField]
     private float m_LerpSpeed = 5f;
-    [SerializeField]
     private float m_LookError = 5f;
-    [SerializeField]
     private float m_AimSpeed = 5f;
     public Vector3 AimPoint { get; set; }
 
 
+    private const string OverlayLayer = "Layer Overlay";
     private int m_OverlayLayer;
     private readonly int m_IsHolsterHash = Animator.StringToHash("IsHolster");
     private readonly int m_FireStateHash = Animator.StringToHash("Fire");
@@ -40,29 +37,45 @@ public class PlayerAnimator : MonoBehaviour
     private int m_AimStatus = 0;
 
 
-    public GameObject FPSModel;
-    public GameObject TPSModel;
-    public GameObject CurrentModel => m_CurCamMode == CameraMode.FirstPerson ? FPSModel : TPSModel;
+    private GameObject m_FPSModel;
+    private GameObject m_TPSModel;
+    public GameObject CurrentModel => m_CurCamMode == CameraMode.FirstPerson ? m_FPSModel : m_TPSModel;
 
-    void Awake()
+
+    public override void Init(ActorBehaviour ab)
     {
+        if (!(ab is PlayerBehaviour)) return;
+        base.Init(ab);
+        PlayerBehaviour pb = ab as PlayerBehaviour;
+        m_LerpSpeed = pb.LerpSpeed;
+        m_LookError = pb.LookError;
+        m_AimSpeed = pb.AimSpeed;
+        m_FPSModel = pb.FPSModel;
+        m_TPSModel = pb.TPSModel;
+    }
+
+    protected override void Awake()
+    {
+        base.Awake();
         m_Animator = GetComponentInChildren<Animator>();
         m_CharacterController = GetComponent<CharacterController>();
 
-        var cameraManager = CameraManager.Instance;
-        if (cameraManager != null)
-            cameraManager.OnSwitchCam += OnSwitchCam;
-
-        var inputHandler = GetComponent<InputHandler>();
-    }
-
-    void Start()
-    {
+        m_CameraManager = CameraManager.Instance;
+        if (m_CameraManager != null)
+            m_CameraManager.OnSwitchCam += OnSwitchCam;
 
     }
 
-    void Update()
+    protected override void OnDestroy()
     {
+        base.OnDestroy();
+        if (m_CameraManager != null)
+            m_CameraManager.OnSwitchCam -= OnSwitchCam;
+    }
+
+    protected override void Update()
+    {
+        base.Update();
         if (m_AimStatus == 1 && m_CurAimValue < 1f)
         {
             m_CurAimValue += Time.deltaTime * m_AimSpeed;
@@ -80,8 +93,9 @@ public class PlayerAnimator : MonoBehaviour
     }
 
 
-    void LateUpdate()
+    protected override void LateUpdate()
     {
+        base.LateUpdate();
         if (m_CharacterController == null || m_Animator == null)
             return;
 
@@ -105,7 +119,7 @@ public class PlayerAnimator : MonoBehaviour
 
         m_Animator.SetFloat(m_VelocityHash, velocity.magnitude);
 
-        var fpsTransform = FPSModel.transform;
+        var fpsTransform = m_FPSModel.transform;
         var targetRot = Quaternion.LookRotation(AimPoint - fpsTransform.position);
         if (Mathf.Abs(Quaternion.Angle(fpsTransform.rotation, targetRot)) > m_LookError)
             fpsTransform.rotation = Quaternion.RotateTowards(fpsTransform.rotation, targetRot, Time.deltaTime * m_LerpSpeed);
@@ -126,20 +140,20 @@ public class PlayerAnimator : MonoBehaviour
         switch (mode)
         {
             case CameraMode.FirstPerson:
-                FPSModel.SetActive(true);
-                TPSModel.SetActive(false);
-                m_Animator = FPSModel.GetComponent<Animator>();
+                m_FPSModel.SetActive(true);
+                m_TPSModel.SetActive(false);
+                m_Animator = m_FPSModel.GetComponent<Animator>();
                 break;
             case CameraMode.ThirdPerson:
-                FPSModel.SetActive(false);
-                TPSModel.SetActive(true);
-                m_Animator = TPSModel.GetComponent<Animator>();
+                m_FPSModel.SetActive(false);
+                m_TPSModel.SetActive(true);
+                m_Animator = m_TPSModel.GetComponent<Animator>();
                 break;
         }
 
         if (m_Animator != null)
         {
-            m_OverlayLayer = m_Animator.GetLayerIndex("Layer Overlay");
+            m_OverlayLayer = m_Animator.GetLayerIndex(OverlayLayer);
         }
 
         m_CurCamMode = mode;
@@ -180,7 +194,7 @@ public class PlayerAnimator : MonoBehaviour
     {
         if (m_CurCamMode == CameraMode.FirstPerson)
         {
-            FPSModel.transform.Rotate(-look.y, 0, 0);
+            m_FPSModel.transform.Rotate(-look.y, 0, 0);
         }
 
     }

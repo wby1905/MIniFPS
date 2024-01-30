@@ -15,7 +15,7 @@ public class AnimationAudioState : StateMachineBehaviour
 
 
     private AudioManager m_AudioManager;
-    private AudioPoolItem m_AudioPoolItem;
+    private AudioActor m_AudioPoolItem;
 
 
 

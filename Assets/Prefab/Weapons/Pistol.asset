@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e70e63ff467602479793b4a03c30dce, type: 3}
+  m_Name: Pistol
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 8921983164076306573, guid: 8d979fece8725bc4991e049b11eb6b5e, type: 3}
+  controllerNames:
+  - ProjectileWeapon
+  - Muzzle
+  muzzleData: {fileID: 11400000, guid: 55ba6e264eb7cfc42b31e7830fe38b0c, type: 2}
+  LeftHandTarget: LeftHandIKTarget
+  RightHandTarget: 
+  LeftHandPole: 
+  RightHandPole: 
+  IsAutomatic: 0
+  FireCoolDown: 0.1
+  CurAmmo: 30
+  MaxAmmo: 30
+  TotalAmmo: 90
+  FireSounds:
+  - {fileID: 8300000, guid: 9e9480b4d07646942b555fd43f2a0f71, type: 3}
+  FireEmptySound: {fileID: 8300000, guid: 0c187ee2790c74c4e9985aa1ee1a12d5, type: 3}
+  ReloadSound: {fileID: 8300000, guid: 125edb9e36f963249bc792cca38492b1, type: 3}
+  Ejection: SOCKET_Eject
+  ProjectilePrefab: {fileID: 4570466485586570219, guid: eab8575c50d9d6c4b84f84a57a16051f,
+    type: 3}
+  CasingPrefab: {fileID: 6469621483705423893, guid: fa4d74ad0ff204d41b96a0ee36de6f55,
+    type: 3}

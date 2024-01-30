@@ -1,9 +1,8 @@
 using Cinemachine;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Video;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : ActorController
 {
     public PlayerState CurrentState { get; private set; }
 
@@ -12,11 +11,12 @@ public class PlayerController : MonoBehaviour
     public bool IsRunning => CurrentState == PlayerState.Running;
     public bool IsAiming => CurrentState == PlayerState.Aiming;
     public bool IsReloading => CurrentState == PlayerState.Reloading;
+    public bool IsEquipped => m_Inventory != null && m_Inventory.IsEquipped;
     protected bool CanSwitch => m_Inventory != null && IsIdle && m_SwitchTimer <= 0f;
-    protected bool CanFire => m_Inventory != null && m_Inventory.IsEquipped && (IsIdle || IsAiming || IsRunning);
-    protected bool CanAim => m_Inventory != null && m_Inventory.IsEquipped && IsIdle;
+    protected bool CanFire => IsEquipped && (IsIdle || IsAiming || IsRunning);
+    protected bool CanAim => IsEquipped && IsIdle;
     protected bool CanRun => IsIdle;
-    protected bool CanReload => m_Inventory != null && m_Inventory.IsEquipped && IsIdle;
+    protected bool CanReload => IsEquipped && IsIdle;
 
     private InputHandler m_InputHandler;
     private PlayerInventory m_Inventory;
@@ -28,29 +28,26 @@ public class PlayerController : MonoBehaviour
     /**
     * IK
     */
-    public PlayerAnimationEventHandler FPSAnimationEventHandler, TPSAnimationEventHandler;
-    public IKHandler FPSIKHandler, TPSIKHandler;
+    private PlayerAnimationEventHandler m_FPSAnimationEventHandler, m_TPSAnimationEventHandler;
+    private IKHandler m_FPSIKHandler, m_TPSIKHandler;
     private IKHandler m_CurIKHandler;
 
     /**
     * Movement
     */
-    public float GroundSpeed = 5f;
-    public float RunSpeed = 10f;
-    public float LookSpeed = 200f;
-    public float LookPitchLimit = 60f;
-    public float JumpSpeed = 5f;
+    private float m_GroundSpeed = 5f;
+    private float m_RunSpeed = 10f;
+    private float m_LookSpeed = 200f;
+    private float m_LookPitchLimit = 60f;
+    private float m_JumpSpeed = 5f;
     private Vector3 m_Velocity;
     private bool m_IsRunning = false;
 
     /**
     * Fire
     */
-    [SerializeField]
-    private Vector3 m_FPSAimOffset;
-    [SerializeField]
+    private Vector3 m_FPSAimOffset = new Vector3(-10f, 0, 0);
     private Vector3 m_FPSAimOffsetTop = new Vector3(0, 0.08f, 0);
-    [SerializeField]
     private Vector3 m_FPSAimOffsetBottom = new Vector3(0, -0.1f, 0);
     private bool m_IsFiring = false;
     private bool m_IsAiming = false;
@@ -59,8 +56,8 @@ public class PlayerController : MonoBehaviour
     /**
     * Raycast
     */
-    public LayerMask HitLayerMask;
-    public float HitDistance = 1000f;
+    private LayerMask m_HitLayerMask;
+    private float m_HitDistance = 1000f;
     private Camera m_Camera;
     private Vector3 m_AimPoint;
     private Vector3 m_ScreenCenter = new Vector3(0.5f, 0.5f, 0f);
@@ -71,7 +68,7 @@ public class PlayerController : MonoBehaviour
     */
     private bool m_IsHolster = false;
     private int m_WeaponIdx = 0;
-    public float SwitchCoolDown = 0.5f;
+    private float m_SwitchCoolDown = 0.5f;
     private float m_SwitchTimer = 0f;
     private Weapon m_CurWeapon;
     public Weapon CurWeapon => m_CurWeapon;
@@ -82,13 +79,35 @@ public class PlayerController : MonoBehaviour
     */
     public UnityAction<Weapon> OnWeaponSwitched;
 
-
-
-    void Awake()
+    public override void Init(ActorBehaviour ab)
     {
-        m_InputHandler = GetComponent<InputHandler>();
-        m_Inventory = GetComponent<PlayerInventory>();
-        m_PlayerAnimator = GetComponent<PlayerAnimator>();
+        if (!(ab is PlayerBehaviour)) return;
+        base.Init(ab);
+        PlayerBehaviour pb = ab as PlayerBehaviour;
+        m_GroundSpeed = pb.GroundSpeed;
+        m_RunSpeed = pb.RunSpeed;
+        m_LookSpeed = pb.LookSpeed;
+        m_LookPitchLimit = pb.LookPitchLimit;
+        m_JumpSpeed = pb.JumpSpeed;
+        m_HitLayerMask = pb.HitLayerMask;
+        m_HitDistance = pb.HitDistance;
+        m_SwitchCoolDown = pb.SwitchCoolDown;
+        m_FPSAimOffset = pb.FPSAimOffset;
+        m_FPSAimOffsetTop = pb.FPSAimOffsetTop;
+        m_FPSAimOffsetBottom = pb.FPSAimOffsetBottom;
+        m_FPSAnimationEventHandler = pb.FPSAnimationEventHandler;
+        m_TPSAnimationEventHandler = pb.TPSAnimationEventHandler;
+        m_FPSIKHandler = pb.FPSIKHandler;
+        m_TPSIKHandler = pb.TPSIKHandler;
+    }
+
+
+    protected override void Awake()
+    {
+        base.Awake();
+        m_InputHandler = GetController<InputHandler>();
+        m_Inventory = GetController<PlayerInventory>();
+        m_PlayerAnimator = GetController<PlayerAnimator>();
         m_CharacterController = GetComponent<CharacterController>();
         m_CameraManager = CameraManager.Instance;
 
@@ -106,16 +125,16 @@ public class PlayerController : MonoBehaviour
             m_InputHandler.OnReload += TryReloading;
         }
 
-        if (FPSAnimationEventHandler != null)
+        if (m_FPSAnimationEventHandler != null)
         {
-            FPSAnimationEventHandler.Holster += OnHolster;
-            FPSAnimationEventHandler.ReloadComplete += OnReloadComplete;
+            m_FPSAnimationEventHandler.Holster += OnHolster;
+            m_FPSAnimationEventHandler.ReloadComplete += OnReloadComplete;
         }
 
-        if (TPSAnimationEventHandler != null)
+        if (m_TPSAnimationEventHandler != null)
         {
-            TPSAnimationEventHandler.Holster += OnHolster;
-            TPSAnimationEventHandler.ReloadComplete += OnReloadComplete;
+            m_TPSAnimationEventHandler.Holster += OnHolster;
+            m_TPSAnimationEventHandler.ReloadComplete += OnReloadComplete;
         }
 
         CurrentState = PlayerState.Idle;
@@ -126,15 +145,51 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void Start()
+    protected override void OnDestroy()
     {
-        var cameraManager = CameraManager.Instance;
-        if (cameraManager != null)
-            m_Camera = cameraManager.CurrentCamera;
+        base.OnDestroy();
+        if (m_InputHandler != null)
+        {
+            m_InputHandler.OnJump = null;
+            m_InputHandler.OnSwitchNext = null;
+            m_InputHandler.OnSwitchPrev = null;
+            m_InputHandler.OnStartFire = null;
+            m_InputHandler.OnStopFire = null;
+            m_InputHandler.OnStartAim = null;
+            m_InputHandler.OnStopAim = null;
+            m_InputHandler.OnStartRun = null;
+            m_InputHandler.OnStopRun = null;
+            m_InputHandler.OnReload = null;
+        }
+
+        if (m_FPSAnimationEventHandler != null)
+        {
+            m_FPSAnimationEventHandler.Holster -= OnHolster;
+            m_FPSAnimationEventHandler.ReloadComplete -= OnReloadComplete;
+        }
+
+        if (m_TPSAnimationEventHandler != null)
+        {
+            m_TPSAnimationEventHandler.Holster -= OnHolster;
+            m_TPSAnimationEventHandler.ReloadComplete -= OnReloadComplete;
+        }
+
+        if (m_CameraManager != null)
+        {
+            m_CameraManager.OnSwitchCam -= OnSwitchCam;
+        }
     }
 
-    void Update()
+    protected override void Start()
     {
+        base.Start();
+        if (m_CameraManager != null)
+            m_Camera = m_CameraManager.CurrentCamera;
+    }
+
+    protected override void Update()
+    {
+        base.Update();
         if (m_SwitchTimer > 0f)
             m_SwitchTimer -= Time.deltaTime;
 
@@ -147,7 +202,7 @@ public class PlayerController : MonoBehaviour
         if (m_IsFiring)
             TryFire();
 
-        // aiming and running are mutually exclusive
+        // aiming and running 不可同时进行
         if (m_IsAiming)
             TryStartAim();
         else if (m_IsRunning)
@@ -155,18 +210,14 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    void LateUpdate()
+    protected override void LateUpdate()
     {
+        base.LateUpdate();
         if (m_CharacterController != null)
         {
             HandleGravity();
             HandleLook();
             HandleMove();
-            if (IsRunning)
-            {
-                m_Velocity.x *= RunSpeed;
-                m_Velocity.z *= RunSpeed;
-            }
             m_CharacterController.Move(m_Velocity * Time.deltaTime);
         }
     }
@@ -174,13 +225,17 @@ public class PlayerController : MonoBehaviour
     void RaycastFromCrosshair()
     {
         if (m_Camera == null)
-            return;
+        {
+            m_Camera = m_CameraManager.CurrentCamera;
+            if (m_Camera == null)
+                return;
+        }
 
         Ray ray = m_Camera.ViewportPointToRay(m_ScreenCenter);
         RaycastHit hit;
-        if (!Physics.Raycast(ray, out hit, HitDistance, HitLayerMask))
+        if (!Physics.Raycast(ray, out hit, m_HitDistance, m_HitLayerMask))
         {
-            m_AimPoint = ray.GetPoint(HitDistance);
+            m_AimPoint = ray.GetPoint(m_HitDistance);
         }
         else
         {
@@ -199,7 +254,9 @@ public class PlayerController : MonoBehaviour
             moveDir = transform.forward * movement.y + transform.right * movement.x;
         moveDir.y = 0;
         moveDir.Normalize();
-        m_Velocity = moveDir * GroundSpeed + m_Velocity.y * Vector3.up;
+
+        var speed = m_IsRunning ? m_RunSpeed : m_GroundSpeed;
+        m_Velocity = moveDir * speed + m_Velocity.y * Vector3.up;
     }
 
     void HandleGravity()
@@ -223,7 +280,7 @@ public class PlayerController : MonoBehaviour
             return;
         var camMode = m_CameraManager.CurrentCameraMode;
 
-        look *= LookSpeed * Time.deltaTime;
+        look *= m_LookSpeed * Time.deltaTime;
 
         switch (camMode)
         {
@@ -234,7 +291,7 @@ public class PlayerController : MonoBehaviour
                 if (curPitch < -180f) curPitch += 360f;
                 var deltaPitch = -look.y;
                 curPitch += deltaPitch;
-                if (curPitch < -LookPitchLimit || curPitch > LookPitchLimit)
+                if (curPitch < -m_LookPitchLimit || curPitch > m_LookPitchLimit)
                     return;
                 curCM.transform.Rotate(deltaPitch, 0, 0);
                 if (IsAiming)
@@ -259,7 +316,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!m_CharacterController.isGrounded)
             return;
-        m_Velocity.y = JumpSpeed;
+        m_Velocity.y = m_JumpSpeed;
     }
 
     void TrySwitchWeapon(int index)
@@ -277,12 +334,11 @@ public class PlayerController : MonoBehaviour
         m_WeaponIdx = index;
         m_IsHolster = true;
         m_PlayerAnimator.SetHolster(true);
-        m_SwitchTimer = SwitchCoolDown;
+        m_SwitchTimer = m_SwitchCoolDown;
     }
     void TryFire()
     {
         if (!CanFire) return;
-
         if (m_CurWeapon != null)
         {
             var state = m_CurWeapon.TryFire(m_AimPoint);
@@ -328,10 +384,14 @@ public class PlayerController : MonoBehaviour
     {
         // temporary solution for camera offset
         // may be configurable for every weapon
+        if (m_Camera == null)
+        {
+            m_Camera = m_CameraManager.CurrentCamera;
+        }
         var curPitch = m_Camera.transform.eulerAngles.x;
         if (curPitch > 180f) curPitch -= 360f;
         if (curPitch < -180f) curPitch += 360f;
-        var fraction = (curPitch + LookPitchLimit) / (2 * LookPitchLimit);
+        var fraction = (curPitch + m_LookPitchLimit) / (2 * m_LookPitchLimit);
         m_FPSCurAimOffset = m_FPSAimOffset +
                             Vector3.Lerp(m_FPSAimOffsetTop, m_FPSAimOffsetBottom, fraction);
         m_CameraManager.MoveCurCamera(m_FPSCurAimOffset);
@@ -407,9 +467,8 @@ public class PlayerController : MonoBehaviour
             CurrentState = PlayerState.Unequipped;
             m_IsHolster = false;
             m_PlayerAnimator.SetHolster(false);
-            m_SwitchTimer = SwitchCoolDown;
+            m_SwitchTimer = m_SwitchCoolDown;
         }
-
         m_CurWeapon = m_Inventory.CurrentWeapon;
         if (OnWeaponSwitched != null)
             OnWeaponSwitched.Invoke(m_CurWeapon);
@@ -429,10 +488,10 @@ public class PlayerController : MonoBehaviour
         switch (mode)
         {
             case CameraMode.FirstPerson:
-                m_CurIKHandler = FPSIKHandler;
+                m_CurIKHandler = m_FPSIKHandler;
                 break;
             case CameraMode.ThirdPerson:
-                m_CurIKHandler = TPSIKHandler;
+                m_CurIKHandler = m_TPSIKHandler;
                 break;
         }
     }
@@ -462,18 +521,5 @@ public class PlayerController : MonoBehaviour
             m_CurIKHandler.RightHandPole = null;
         }
     }
-
-#if UNITY_EDITOR
-    void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(m_AimPoint, 0.1f);
-    }
-
-    void OnGUI()
-    {
-
-    }
-#endif
 
 }
