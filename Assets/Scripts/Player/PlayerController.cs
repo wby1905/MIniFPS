@@ -119,6 +119,7 @@ public class PlayerController : ActorController
         m_InputHandler = GetController<InputHandler>();
         m_Inventory = GetController<PlayerInventory>();
         m_PlayerAnimator = GetController<PlayerAnimator>();
+        m_SkillSystem = GetController<SkillSystem>();
         m_CharacterController = GetComponent<CharacterController>();
         m_CameraManager = CameraManager.Instance;
 
@@ -229,10 +230,10 @@ public class PlayerController : ActorController
     protected override void LateUpdate()
     {
         base.LateUpdate();
+        HandleLook();
         if (m_CharacterController != null)
         {
             HandleGravity();
-            HandleLook();
             HandleMove();
             m_CharacterController.Move(m_Velocity * Time.deltaTime);
         }
@@ -471,6 +472,7 @@ public class PlayerController : ActorController
             m_IsIndicatorOpen = false;
         }
         m_SkillSystem.ReleaseSkill(m_SkillIdx);
+        CurrentState = PlayerState.Idle;
     }
 
     /*

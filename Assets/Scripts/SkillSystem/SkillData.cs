@@ -3,13 +3,13 @@ using UnityEngine;
 
 public enum SkillType
 {
-    Target,
+    Single,
     Aoe
 }
 
 public enum SelectorType
 {
-    None,
+    Straight,
     Sector,
     Cylinder,
 }
@@ -39,12 +39,13 @@ public class SkillData : ScriptableObject
     [HideInInspector]
     public float cdTimer;
     public float castDistance;
-    public float castAngle;
+    public Vector3 castAngle;
     public string[] affectTags;
+    public LayerMask affectLayers;
     [HideInInspector]
     public Transform[] targets;
     public string[] impactTypes;
-    public float damage;
+    public float value;
     public float duration;
     [HideInInspector]
     public ActorBehaviour caster;
@@ -55,5 +56,6 @@ public class SkillData : ScriptableObject
     public SelectorType selectorType;
     public string skillIconName;
     public DestroyType destroyType;
+    [HideInInspector]
     public SkillState skillState;
 }

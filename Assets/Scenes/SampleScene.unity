@@ -452,7 +452,9 @@ MonoBehaviour:
     Scroll - switch weapon
 
     F1 - switch
-    camera'
+    camera
+
+    Q - Skill'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: e73a58f6e2794ae7b1b7e50b7fb811b0, type: 2}
@@ -2329,7 +2331,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2021902645}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.7938094, y: 1.7186168, z: -10.707138}
+  m_LocalPosition: {x: -2.781173, y: 1.7186168, z: -10.707138}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2693,26 +2695,6 @@ PrefabInstance:
       objectReference: {fileID: 405751353}
     - target: {fileID: 2334837486403477153, guid: a4ece7350cf529f49b2fa82a7db28d5e,
         type: 3}
-      propertyPath: AimSpeed
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2334837486403477153, guid: a4ece7350cf529f49b2fa82a7db28d5e,
-        type: 3}
-      propertyPath: RunSpeed
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 2334837486403477153, guid: a4ece7350cf529f49b2fa82a7db28d5e,
-        type: 3}
-      propertyPath: LerpSpeed
-      value: 200
-      objectReference: {fileID: 0}
-    - target: {fileID: 2334837486403477153, guid: a4ece7350cf529f49b2fa82a7db28d5e,
-        type: 3}
-      propertyPath: LookSpeed
-      value: 150
-      objectReference: {fileID: 0}
-    - target: {fileID: 2334837486403477153, guid: a4ece7350cf529f49b2fa82a7db28d5e,
-        type: 3}
       propertyPath: CasingIcon
       value: 
       objectReference: {fileID: 1121276340}
@@ -2726,11 +2708,6 @@ PrefabInstance:
       propertyPath: CurAmmoText
       value: 
       objectReference: {fileID: 1869657371}
-    - target: {fileID: 2334837486403477153, guid: a4ece7350cf529f49b2fa82a7db28d5e,
-        type: 3}
-      propertyPath: GroundSpeed
-      value: 5
-      objectReference: {fileID: 0}
     - target: {fileID: 2334837486403477153, guid: a4ece7350cf529f49b2fa82a7db28d5e,
         type: 3}
       propertyPath: MagazineIcon
@@ -2758,11 +2735,6 @@ PrefabInstance:
       objectReference: {fileID: 1869657371}
     - target: {fileID: 2334837486403477153, guid: a4ece7350cf529f49b2fa82a7db28d5e,
         type: 3}
-      propertyPath: FPSAimOffset.x
-      value: 0.18
-      objectReference: {fileID: 0}
-    - target: {fileID: 2334837486403477153, guid: a4ece7350cf529f49b2fa82a7db28d5e,
-        type: 3}
       propertyPath: WeaponNameText
       value: 
       objectReference: {fileID: 405751353}
@@ -2783,25 +2755,14 @@ PrefabInstance:
       objectReference: {fileID: 405751353}
     - target: {fileID: 2334837486403477153, guid: a4ece7350cf529f49b2fa82a7db28d5e,
         type: 3}
-      propertyPath: HitLayerMask.m_Bits
-      value: 279
+      propertyPath: skills.Array.size
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2334837486403477153, guid: a4ece7350cf529f49b2fa82a7db28d5e,
         type: 3}
-      propertyPath: WeaponUIPresets.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2334837486403477153, guid: a4ece7350cf529f49b2fa82a7db28d5e,
-        type: 3}
-      propertyPath: WeaponUIPresets.Array.data[0]
+      propertyPath: skills.Array.data[0]
       value: 
-      objectReference: {fileID: 11400000, guid: 3b71c15c752b9274e914639dc5b77e9f,
-        type: 2}
-    - target: {fileID: 2334837486403477153, guid: a4ece7350cf529f49b2fa82a7db28d5e,
-        type: 3}
-      propertyPath: WeaponUIPresets.Array.data[1]
-      value: 
-      objectReference: {fileID: 11400000, guid: c9f0783d6e9795e49826b6a6f5f25206,
+      objectReference: {fileID: 11400000, guid: be0a25e26c0ce194eb7961a0a2123cc7,
         type: 2}
     - target: {fileID: 4012919284534065771, guid: a4ece7350cf529f49b2fa82a7db28d5e,
         type: 3}
@@ -2886,7 +2847,7 @@ PrefabInstance:
     - target: {fileID: 6378335931649559425, guid: a4ece7350cf529f49b2fa82a7db28d5e,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.537045
+      value: -0.5244086
       objectReference: {fileID: 0}
     - target: {fileID: 6378335931649559425, guid: a4ece7350cf529f49b2fa82a7db28d5e,
         type: 3}

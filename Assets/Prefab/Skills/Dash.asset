@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eff8673c7bdd9574baaf21322cfa1618, type: 3}
+  m_Name: Dash
+  m_EditorClassIdentifier: 
+  skillName: Dash
+  description: "\u51B2\u523A"
+  cooldown: 0.2
+  cdTimer: -0.3
+  castDistance: 10
+  castAngle: {x: 0, y: 0, z: 0}
+  affectTags: []
+  affectLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  targets: []
+  impactTypes:
+  - Move
+  value: 0
+  duration: 0.1
+  caster: {fileID: 0}
+  skillIndicator: {fileID: 0}
+  skillPrefab: {fileID: 4348464203803340867, guid: 03e4e2926c393de49afebaed6907fe64,
+    type: 3}
+  animationNames: []
+  skillType: 1
+  selectorType: 0
+  skillIconName: 
+  destroyType: 0
+  skillState: 0
