@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "ProjectileWeaponData", menuName = "ActorData/ProjectileWeaponData")]
+[CreateAssetMenu(fileName = "ProjectileWeaponData", menuName = "MIniFPS/ActorData/ProjectileWeaponData")]
 public class ProjectileWeaponData : WeaponData
 {
     public string Ejection;

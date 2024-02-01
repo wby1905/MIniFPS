@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "MuzzleData", menuName = "ActorData/MuzzleData")]
+[CreateAssetMenu(fileName = "MuzzleData", menuName = "MIniFPS/ActorData/MuzzleData")]
 public class MuzzleData : ActorData
 {
     public string SocketName;

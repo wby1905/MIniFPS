@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "WeaponData", menuName = "ActorData/WeaponData")]
+[CreateAssetMenu(fileName = "WeaponData", menuName = "MIniFPS/ActorData/WeaponData")]
 public class WeaponData : ActorData
 {
     public MuzzleData muzzleData;
