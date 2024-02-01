@@ -33,6 +33,8 @@ public class PlayerBehaviour : ActorBehaviour
 
     public float SwitchCoolDown = 0.5f;
 
+    public SkillData[] skills;
+
 
     [Header("HUD")]
     public TMP_Text CurAmmoText;

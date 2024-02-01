@@ -11,12 +11,14 @@ public class PlayerController : ActorController
     public bool IsRunning => CurrentState == PlayerState.Running;
     public bool IsAiming => CurrentState == PlayerState.Aiming;
     public bool IsReloading => CurrentState == PlayerState.Reloading;
+    public bool IsCasting => CurrentState == PlayerState.CastingSkill;
     public bool IsEquipped => m_Inventory != null && m_Inventory.IsEquipped;
     protected bool CanSwitch => m_Inventory != null && IsIdle && m_SwitchTimer <= 0f;
     protected bool CanFire => IsEquipped && (IsIdle || IsAiming || IsRunning);
     protected bool CanAim => IsEquipped && IsIdle;
     protected bool CanRun => IsIdle;
     protected bool CanReload => IsEquipped && IsIdle;
+    protected bool CanSkill => IsIdle;
 
     private InputHandler m_InputHandler;
     private PlayerInventory m_Inventory;
@@ -75,6 +77,15 @@ public class PlayerController : ActorController
 
 
     /**
+    * Skill
+    */
+    private SkillSystem m_SkillSystem;
+    private bool m_IsCasting = false;
+    private bool m_IsIndicatorOpen = false;
+    private int m_SkillIdx = 0;
+
+
+    /**
     * Events
     */
     public UnityAction<Weapon> OnWeaponSwitched;
@@ -123,6 +134,8 @@ public class PlayerController : ActorController
             m_InputHandler.OnStartRun += () => m_IsRunning = true;
             m_InputHandler.OnStopRun += () => { StopRunning(); m_IsRunning = false; };
             m_InputHandler.OnReload += TryReloading;
+            m_InputHandler.OnSkillPressed += () => m_IsCasting = true;
+            m_InputHandler.OnSkillReleased += () => { StopSkill(); m_IsCasting = false; };
         }
 
         if (m_FPSAnimationEventHandler != null)
@@ -207,6 +220,9 @@ public class PlayerController : ActorController
             TryStartAim();
         else if (m_IsRunning)
             TryRunning();
+
+        if (m_IsCasting)
+            TrySkill();
 
     }
 
@@ -370,6 +386,7 @@ public class PlayerController : ActorController
 
     void StopAiming()
     {
+        if (!IsAiming) return;
         CurrentState = PlayerState.Idle;
         m_PlayerAnimator.StopAiming();
         m_CurWeapon.StopAiming();
@@ -410,6 +427,7 @@ public class PlayerController : ActorController
 
     void StopRunning()
     {
+        if (!IsRunning) return;
         m_PlayerAnimator.SetRunning(false);
         CurrentState = PlayerState.Idle;
     }
@@ -433,6 +451,27 @@ public class PlayerController : ActorController
         }
     }
 
+    void TrySkill()
+    {
+        if (!CanSkill) return;
+        CurrentState = PlayerState.CastingSkill;
+        if (m_SkillSystem.StartIndicator(m_SkillIdx))
+        {
+            m_IsIndicatorOpen = true;
+        }
+    }
+
+    void StopSkill()
+    {
+        if (!IsCasting) return;
+
+        if (m_IsIndicatorOpen)
+        {
+            m_SkillSystem.EndIndicator();
+            m_IsIndicatorOpen = false;
+        }
+        m_SkillSystem.ReleaseSkill(m_SkillIdx);
+    }
 
     /*
     * Animation events

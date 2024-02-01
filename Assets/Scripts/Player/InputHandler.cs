@@ -16,6 +16,8 @@ public class InputHandler : ActorController
     public UnityAction OnReload;
     public UnityAction OnStartRun;
     public UnityAction OnStopRun;
+    public UnityAction OnSkillPressed;
+    public UnityAction OnSkillReleased;
 
     private PlayerControl m_PlayerControl;
     private CameraManager m_CameraManager;
@@ -54,6 +56,8 @@ public class InputHandler : ActorController
         m_PlayerControl.gameplay.Run.started += ctx => StartRun();
         m_PlayerControl.gameplay.Run.canceled += ctx => StopRun();
 
+        m_PlayerControl.gameplay.Skill.started += ctx => SkillPressed();
+        m_PlayerControl.gameplay.Skill.canceled += ctx => OnSkillReleased?.Invoke();
     }
 
     protected override void OnEnable()
@@ -171,5 +175,17 @@ public class InputHandler : ActorController
     {
         if (OnStopRun != null)
             OnStopRun.Invoke();
+    }
+
+    void SkillPressed()
+    {
+        if (OnSkillPressed != null)
+            OnSkillPressed.Invoke();
+    }
+
+    void SkillReleased()
+    {
+        if (OnSkillReleased != null)
+            OnSkillReleased.Invoke();
     }
 }

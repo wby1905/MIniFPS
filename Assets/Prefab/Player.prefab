@@ -72,7 +72,9 @@ MonoBehaviour:
   - PlayerController
   - PlayerInventory
   - HUD
-  LerpSpeed: 5
+  - SkillSystem
+  - SkillManager
+  LerpSpeed: 200
   LookError: 5
   AimSpeed: 5
   FPSModel: {fileID: 4012919284534065771}
@@ -83,24 +85,25 @@ MonoBehaviour:
   TPSIKHandler: {fileID: 5016627362659386433}
   GroundSpeed: 5
   RunSpeed: 10
-  LookSpeed: 200
+  LookSpeed: 150
   LookPitchLimit: 60
   JumpSpeed: 5
-  FPSAimOffset: {x: -10, y: 0, z: 0}
+  FPSAimOffset: {x: 0.18, y: 0, z: 0}
   FPSAimOffsetTop: {x: 0, y: 0.08, z: 0}
   FPSAimOffsetBottom: {x: 0, y: -0.1, z: 0}
   HitLayerMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 279
   HitDistance: 1000
   SwitchCoolDown: 0.5
-  m_CurAmmoText: {fileID: 0}
-  m_TotalAmmoText: {fileID: 0}
-  m_WeaponNameText: {fileID: 0}
-  m_WeaponIcon: {fileID: 0}
-  m_MagazineIcon: {fileID: 0}
-  m_CasingIcon: {fileID: 0}
-  m_WeaponUIPresets:
+  skills: []
+  CurAmmoText: {fileID: 0}
+  TotalAmmoText: {fileID: 0}
+  WeaponNameText: {fileID: 0}
+  WeaponIcon: {fileID: 0}
+  MagazineIcon: {fileID: 0}
+  CasingIcon: {fileID: 0}
+  WeaponUIPresets:
   - {fileID: 11400000, guid: 3b71c15c752b9274e914639dc5b77e9f, type: 2}
   - {fileID: 11400000, guid: c9f0783d6e9795e49826b6a6f5f25206, type: 2}
   WeaponTable: {fileID: 11400000, guid: db5497856f499ba4a82038a66643ef26, type: 2}
@@ -410,7 +413,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8271314248308779917}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.62968427, y: 1.82, z: -1.38}
+  m_LocalPosition: {x: -0.6603011, y: 1.82, z: -1.38}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5949748531089172009}

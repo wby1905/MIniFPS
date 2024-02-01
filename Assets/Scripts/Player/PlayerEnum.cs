@@ -7,5 +7,6 @@ public enum PlayerState
     Switching,
     Unequipped,
     ThrowGrenade,
+    CastingSkill,
     Dead,
 }

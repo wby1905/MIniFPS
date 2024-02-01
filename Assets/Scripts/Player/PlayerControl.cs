@@ -125,6 +125,15 @@ public partial class @PlayerControl : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Skill"",
+                    ""type"": ""Button"",
+                    ""id"": ""81220f9a-e941-45f8-85c6-a6a2d66f34c4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -345,6 +354,17 @@ public partial class @PlayerControl : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Run"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""27902c0c-3b62-4f1d-9104-532b2ee82869"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Skill"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -882,6 +902,7 @@ public partial class @PlayerControl : IInputActionCollection2, IDisposable
         m_gameplay_Aim = m_gameplay.FindAction("Aim", throwIfNotFound: true);
         m_gameplay_Reload = m_gameplay.FindAction("Reload", throwIfNotFound: true);
         m_gameplay_Run = m_gameplay.FindAction("Run", throwIfNotFound: true);
+        m_gameplay_Skill = m_gameplay.FindAction("Skill", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -964,6 +985,7 @@ public partial class @PlayerControl : IInputActionCollection2, IDisposable
     private readonly InputAction m_gameplay_Aim;
     private readonly InputAction m_gameplay_Reload;
     private readonly InputAction m_gameplay_Run;
+    private readonly InputAction m_gameplay_Skill;
     public struct GameplayActions
     {
         private @PlayerControl m_Wrapper;
@@ -979,6 +1001,7 @@ public partial class @PlayerControl : IInputActionCollection2, IDisposable
         public InputAction @Aim => m_Wrapper.m_gameplay_Aim;
         public InputAction @Reload => m_Wrapper.m_gameplay_Reload;
         public InputAction @Run => m_Wrapper.m_gameplay_Run;
+        public InputAction @Skill => m_Wrapper.m_gameplay_Skill;
         public InputActionMap Get() { return m_Wrapper.m_gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1021,6 +1044,9 @@ public partial class @PlayerControl : IInputActionCollection2, IDisposable
                 @Run.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRun;
                 @Run.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRun;
                 @Run.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRun;
+                @Skill.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSkill;
+                @Skill.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSkill;
+                @Skill.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSkill;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
@@ -1058,6 +1084,9 @@ public partial class @PlayerControl : IInputActionCollection2, IDisposable
                 @Run.started += instance.OnRun;
                 @Run.performed += instance.OnRun;
                 @Run.canceled += instance.OnRun;
+                @Skill.started += instance.OnSkill;
+                @Skill.performed += instance.OnSkill;
+                @Skill.canceled += instance.OnSkill;
             }
         }
     }
@@ -1180,6 +1209,7 @@ public partial class @PlayerControl : IInputActionCollection2, IDisposable
         void OnAim(InputAction.CallbackContext context);
         void OnReload(InputAction.CallbackContext context);
         void OnRun(InputAction.CallbackContext context);
+        void OnSkill(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
