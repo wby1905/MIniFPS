@@ -28,12 +28,14 @@ public class SkillManager : ActorController
     private void InitSkill(SkillData data)
     {
         data.caster = this.actorBehaviour;
+        data.skillState = SkillState.Idle;
     }
 
     public SkillData PrepareSkill(int index)
     {
         if (index < 0 || index >= skills.Length) return null;
         var skill = skills[index];
+
         if (skill != null && skill.skillState == SkillState.Idle)
         {
             skill.skillState = SkillState.Casting;
@@ -55,7 +57,7 @@ public class SkillManager : ActorController
     {
         if (data == null || data.skillPrefab == null) return;
         ActorBehaviour skillAb = WorldManager.Instantiate(data.skillPrefab, data.caster.transform, true);
-        Object.Destroy(skillAb.gameObject, data.duration);
+        Object.Destroy(skillAb.gameObject, data.duration + 0.05f);
 
         SkillDeployer deployer = skillAb.GetController<SkillDeployer>();
         if (deployer != null)
@@ -75,6 +77,7 @@ public class SkillManager : ActorController
         {
             yield return new WaitForSeconds(0.5f);
             data.cdTimer -= 0.5f;
+            Debug.Log(data.cdTimer);
         }
         data.skillState = SkillState.Idle;
     }

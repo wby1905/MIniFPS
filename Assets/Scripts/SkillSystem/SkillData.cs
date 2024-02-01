@@ -54,7 +54,7 @@ public class SkillData : ScriptableObject
     public string[] animationNames;
     public SkillType skillType;
     public SelectorType selectorType;
-    public string skillIconName;
+    public Sprite skillIcon;
     public DestroyType destroyType;
     [HideInInspector]
     public SkillState skillState;

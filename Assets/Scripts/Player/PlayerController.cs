@@ -89,6 +89,7 @@ public class PlayerController : ActorController
     * Events
     */
     public UnityAction<Weapon> OnWeaponSwitched;
+    public UnityAction<float> OnSkillDeployed;
 
     public override void Init(ActorBehaviour ab)
     {
@@ -471,7 +472,9 @@ public class PlayerController : ActorController
             m_SkillSystem.EndIndicator();
             m_IsIndicatorOpen = false;
         }
-        m_SkillSystem.ReleaseSkill(m_SkillIdx);
+        float cd = m_SkillSystem.ReleaseSkill(m_SkillIdx);
+        if (OnSkillDeployed != null)
+            OnSkillDeployed.Invoke(cd);
         CurrentState = PlayerState.Idle;
     }
 

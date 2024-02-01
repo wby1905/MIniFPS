@@ -43,6 +43,7 @@ public class PlayerBehaviour : ActorBehaviour
     public Image WeaponIcon;
     public Image MagazineIcon;
     public Image CasingIcon;
+    public Image SkillIcon;
 
     [Header("Inventory")]
     public WeaponUIPreset[] WeaponUIPresets;

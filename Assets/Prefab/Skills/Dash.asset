@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillName: Dash
   description: "\u51B2\u523A"
-  cooldown: 0.2
-  cdTimer: -0.3
+  cooldown: 10
+  cdTimer: 3
   castDistance: 10
   castAngle: {x: 0, y: 0, z: 0}
   affectTags: []
@@ -34,6 +34,6 @@ MonoBehaviour:
   animationNames: []
   skillType: 1
   selectorType: 0
-  skillIconName: 
+  skillIcon: {fileID: 21300000, guid: bcef3bb3e863a0b47bc29230664c187c, type: 3}
   destroyType: 0
-  skillState: 0
+  skillState: 2

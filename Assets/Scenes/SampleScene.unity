@@ -195,6 +195,80 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 66222179}
   m_CullTransparentMesh: 0
+--- !u!1 &70369501
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 70369502}
+  - component: {fileID: 70369504}
+  - component: {fileID: 70369503}
+  m_Layer: 5
+  m_Name: SkillIcon
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &70369502
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 70369501}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1094070656}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 24.4, y: 175.4}
+  m_SizeDelta: {x: 30, y: 30}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &70369503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 70369501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: bcef3bb3e863a0b47bc29230664c187c, type: 3}
+  m_Type: 3
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 0
+  m_FillOrigin: 2
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &70369504
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 70369501}
+  m_CullTransparentMesh: 0
 --- !u!1 &131928852
 GameObject:
   m_ObjectHideFlags: 0
@@ -1108,6 +1182,7 @@ RectTransform:
   - {fileID: 2106728705}
   - {fileID: 138477497}
   - {fileID: 1121276339}
+  - {fileID: 70369502}
   m_Father: {fileID: 1707245212}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2331,7 +2406,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2021902645}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.781173, y: 1.7186168, z: -10.707138}
+  m_LocalPosition: {x: -2.490537, y: 1.7186168, z: -10.707138}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2426,7 +2501,7 @@ Transform:
   m_GameObject: {fileID: 2086727344}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.36827755, y: -0.10138321, z: -0.17029572}
-  m_LocalScale: {x: 3.3408, y: 3.3408, z: 3.3408}
+  m_LocalScale: {x: 18.044998, y: 18.044998, z: 18.044998}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
@@ -2695,6 +2770,11 @@ PrefabInstance:
       objectReference: {fileID: 405751353}
     - target: {fileID: 2334837486403477153, guid: a4ece7350cf529f49b2fa82a7db28d5e,
         type: 3}
+      propertyPath: SkillIcon
+      value: 
+      objectReference: {fileID: 70369503}
+    - target: {fileID: 2334837486403477153, guid: a4ece7350cf529f49b2fa82a7db28d5e,
+        type: 3}
       propertyPath: CasingIcon
       value: 
       objectReference: {fileID: 1121276340}
@@ -2847,7 +2927,7 @@ PrefabInstance:
     - target: {fileID: 6378335931649559425, guid: a4ece7350cf529f49b2fa82a7db28d5e,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.5244086
+      value: -0.23377252
       objectReference: {fileID: 0}
     - target: {fileID: 6378335931649559425, guid: a4ece7350cf529f49b2fa82a7db28d5e,
         type: 3}

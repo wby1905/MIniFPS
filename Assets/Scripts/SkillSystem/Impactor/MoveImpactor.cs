@@ -33,8 +33,6 @@ public class MoveImpactor : IImpactor
         Vector3 curPos = caster.transform.position;
         while (time < m_Data.duration && Vector3.Distance(caster.transform.position, targetPos) > 0.5f)
         {
-            Debug.Log(caster.name + "移动中" + Vector3.Distance(caster.transform.position, targetPos));
-
             time += Time.deltaTime;
             if (cc != null)
             {

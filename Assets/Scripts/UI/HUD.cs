@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine;
+using System.Collections;
 
 public class HUD : ActorController
 {
@@ -12,6 +13,7 @@ public class HUD : ActorController
     private Image m_WeaponIcon;
     private Image m_MagazineIcon;
     private Image m_CasingIcon;
+    private Image m_SkillIcon;
 
     private WeaponUIPreset[] m_WeaponUIPresets;
     private Dictionary<WeaponType, WeaponUIPreset> m_WeaponUIDic = new Dictionary<WeaponType, WeaponUIPreset>();
@@ -19,9 +21,9 @@ public class HUD : ActorController
 
     public override void Init(ActorBehaviour ab)
     {
-        if (!(ab is PlayerBehaviour)) return;
         base.Init(ab);
         PlayerBehaviour pb = ab as PlayerBehaviour;
+        if (pb == null) return;
         m_CurAmmoText = pb.CurAmmoText;
         m_TotalAmmoText = pb.TotalAmmoText;
         m_WeaponNameText = pb.WeaponNameText;
@@ -29,6 +31,11 @@ public class HUD : ActorController
         m_MagazineIcon = pb.MagazineIcon;
         m_CasingIcon = pb.CasingIcon;
         m_WeaponUIPresets = pb.WeaponUIPresets;
+        m_SkillIcon = pb.SkillIcon;
+        if (pb.skills.Length > 0)
+        {
+            m_SkillIcon.sprite = pb.skills[0].skillIcon;
+        }
     }
 
     protected override void Awake()
@@ -43,6 +50,7 @@ public class HUD : ActorController
         if (m_Player != null)
         {
             m_Player.OnWeaponSwitched += OnWeaponSwitched;
+            m_Player.OnSkillDeployed += OnSkillDeployed;
         }
     }
 
@@ -67,6 +75,23 @@ public class HUD : ActorController
     {
         m_CurAmmoText.text = curAmmo.ToString();
         m_TotalAmmoText.text = totalAmmo.ToString();
+    }
+
+    void OnSkillDeployed(float cooldown)
+    {
+        if (cooldown <= 0) return;
+        actorBehaviour.StartCoroutine(CoolDown(cooldown));
+    }
+
+    IEnumerator CoolDown(float cooldown)
+    {
+        float time = 0f;
+        while (time < cooldown)
+        {
+            time += Time.deltaTime;
+            m_SkillIcon.fillAmount = time / cooldown;
+            yield return null;
+        }
     }
 
     protected override void OnDestroy()

@@ -7,10 +7,4 @@ public class MoveDeployer : SkillDeployer
         CalculateTargets();
         ApplyEffects();
     }
-
-    protected override void OnDestroy()
-    {
-        base.OnDestroy();
-        Debug.Log("MoveDeployer OnDestroy");
-    }
 }

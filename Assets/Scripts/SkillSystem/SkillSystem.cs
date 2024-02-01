@@ -40,12 +40,12 @@ public class SkillSystem : ActorController
 
     public bool StartIndicator(int skillIdx)
     {
-        m_Skill = m_SkillManager.PrepareSkill(skillIdx);
         if (m_Skill == null || m_Skill.skillIndicator == null)
         {
-            m_SkillManager.ResetSkill(skillIdx);
             return false;
         }
+
+        m_Skill = m_SkillManager.PrepareSkill(skillIdx);
 
         //TODO: skill indicator
         return true;
@@ -56,16 +56,17 @@ public class SkillSystem : ActorController
         //TODO: skill indicator
     }
 
-    public void ReleaseSkill(int skillIdx)
+    public float ReleaseSkill(int skillIdx)
     {
         m_Skill = m_SkillManager.PrepareSkill(skillIdx);
-        if (m_Skill == null) return;
+        if (m_Skill == null) return 0f;
         if (m_Skill.animationNames.Length > 0)
         {
             m_Animator.CrossFade(m_Skill.animationNames[m_SkillCounter], 0.1f);
             m_SkillCounter = (m_SkillCounter + 1) % m_Skill.animationNames.Length;
         }
         DeploySkill();
+        return m_Skill.cooldown;
     }
 
 }
