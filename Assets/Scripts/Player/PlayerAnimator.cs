@@ -132,6 +132,14 @@ public class PlayerAnimator : ActorController
         m_Animator.SetFloat(m_VelocityXHash, VelocityX);
         m_Animator.SetFloat(m_VelocityZHash, VelocityZ);
 
+        var weaponSocket = GetController<PlayerInventory>().WeaponSocket;
+        if (weaponSocket != null)
+        {
+            var targetRot = Quaternion.LookRotation(AimPoint - weaponSocket.position);
+            if (Mathf.Abs(Quaternion.Angle(weaponSocket.rotation, targetRot)) > m_LookError)
+                weaponSocket.rotation = Quaternion.RotateTowards(weaponSocket.rotation, targetRot, Time.deltaTime * m_LerpSpeed);
+        }
+
     }
 
     void OnSwitchCam(CameraMode mode)
