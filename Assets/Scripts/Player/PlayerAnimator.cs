@@ -117,6 +117,7 @@ public class PlayerAnimator : ActorController
         m_Animator.SetFloat(m_VelocityHash, velocity.magnitude);
 
         var fpsTransform = m_FPSModel.transform;
+        if (AimPoint == Vector3.zero) return;
         var targetRot = Quaternion.LookRotation(AimPoint - fpsTransform.position);
         if (Mathf.Abs(Quaternion.Angle(fpsTransform.rotation, targetRot)) > m_LookError)
             fpsTransform.rotation = Quaternion.RotateTowards(fpsTransform.rotation, targetRot, Time.deltaTime * m_LerpSpeed);
@@ -133,7 +134,7 @@ public class PlayerAnimator : ActorController
         m_Animator.SetFloat(m_VelocityZHash, VelocityZ);
 
         var weaponSocket = GetController<PlayerInventory>().WeaponSocket;
-        if (weaponSocket != null)
+        if (weaponSocket != null && AimPoint != Vector3.zero)
         {
             var targetRot = Quaternion.LookRotation(AimPoint - weaponSocket.position);
             if (Mathf.Abs(Quaternion.Angle(weaponSocket.rotation, targetRot)) > m_LookError)

@@ -208,10 +208,14 @@ public class PlayerController : ActorController
         if (m_SwitchTimer > 0f)
             m_SwitchTimer -= Time.deltaTime;
 
-        if (m_Inventory.IsEquipped)
+        if (m_Inventory.IsEquipped && CanFire)
         {
             RaycastFromCrosshair();
             m_PlayerAnimator.AimPoint = m_AimPoint;
+        }
+        else
+        {
+            m_PlayerAnimator.AimPoint = Vector3.zero;
         }
 
         if (m_IsFiring)
@@ -446,8 +450,14 @@ public class PlayerController : ActorController
         {
             if (m_CurWeapon.TryReload())
             {
+                UpdateHandIK(false);
                 CurrentState = PlayerState.Reloading;
                 m_PlayerAnimator.Reload();
+                if (m_CameraManager.CurrentCameraMode == CameraMode.ThirdPerson)
+                {
+                    // TPS素材的换弹动画基于aim时的pose
+                    m_PlayerAnimator.StartAiming();
+                }
             }
         }
     }
@@ -521,6 +531,11 @@ public class PlayerController : ActorController
     void OnReloadComplete()
     {
         CurrentState = PlayerState.Idle;
+        UpdateHandIK();
+        if (m_CameraManager.CurrentCameraMode == CameraMode.ThirdPerson)
+        {
+            m_PlayerAnimator.StopAiming();
+        }
     }
 
 
@@ -544,13 +559,13 @@ public class PlayerController : ActorController
     /*
     * IK
     */
-    private void UpdateHandIK()
+    private void UpdateHandIK(bool needIK = true)
     {
         if (m_Inventory == null || m_CurIKHandler == null)
             return;
 
         var curWeapon = m_Inventory.CurrentWeapon;
-        if (curWeapon != null)
+        if (curWeapon != null && needIK)
         {
             m_CurIKHandler.LeftHandTarget = curWeapon.LeftHandTarget;
             m_CurIKHandler.LeftHandPole = curWeapon.LeftHandPole;
