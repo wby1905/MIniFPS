@@ -14,6 +14,8 @@ public class PlayerAnimator : ActorController
 
     private const string OverlayLayer = "Layer Overlay";
     private int m_OverlayLayer;
+
+    private readonly int m_VelocityHash = Animator.StringToHash("Velocity");
     private readonly int m_IsHolsterHash = Animator.StringToHash("IsHolster");
     private readonly int m_FireStateHash = Animator.StringToHash("Fire");
     private readonly int m_IsGroundedHash = Animator.StringToHash("IsGrounded");
@@ -26,11 +28,6 @@ public class PlayerAnimator : ActorController
     */
     private readonly int m_VelocityXHash = Animator.StringToHash("VelocityX");
     private readonly int m_VelocityZHash = Animator.StringToHash("VelocityZ");
-
-    /*
-    * FPS specific animator parameters
-    */
-    private readonly int m_VelocityHash = Animator.StringToHash("Velocity");
 
     private CameraMode m_CurCamMode;
     private float m_CurAimValue = -1f;
@@ -131,8 +128,10 @@ public class PlayerAnimator : ActorController
         var VelocityX = Vector3.Dot(velocity, transform.right);
         var VelocityZ = Vector3.Dot(velocity, transform.forward);
 
+        m_Animator.SetFloat(m_VelocityHash, velocity.magnitude);
         m_Animator.SetFloat(m_VelocityXHash, VelocityX);
         m_Animator.SetFloat(m_VelocityZHash, VelocityZ);
+
     }
 
     void OnSwitchCam(CameraMode mode)

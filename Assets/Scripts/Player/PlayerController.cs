@@ -299,11 +299,11 @@ public class PlayerController : ActorController
         var camMode = m_CameraManager.CurrentCameraMode;
 
         look *= m_LookSpeed * Time.deltaTime;
+        transform.Rotate(0, look.x, 0);
 
         switch (camMode)
         {
             case CameraMode.FirstPerson:
-                transform.Rotate(0, look.x, 0);
                 var curPitch = curCM.transform.eulerAngles.x;
                 if (curPitch > 180f) curPitch -= 360f;
                 if (curPitch < -180f) curPitch += 360f;
@@ -319,7 +319,6 @@ public class PlayerController : ActorController
             case CameraMode.ThirdPerson:
                 var pov = curCM.GetCinemachineComponent<CinemachinePOV>();
                 if (pov == null) return;
-                pov.m_HorizontalAxis.Value += look.x;
                 pov.m_VerticalAxis.Value += -look.y;
                 break;
         }
@@ -489,31 +488,32 @@ public class PlayerController : ActorController
             // switch complete
             if (CurrentState == PlayerState.Unequipped)
                 CurrentState = PlayerState.Idle;
-            UpdateHandIK();
             // Switch weapon
             if (CurrentState == PlayerState.Switching)
             {
                 m_IsHolster = true;
                 m_PlayerAnimator.SetHolster(true);
                 m_Inventory.UnequipWeapon();
-                if (m_CurIKHandler != null)
-                    m_CurIKHandler.LeftHandTarget = null;
             }
         }
         // Unequip finished (gun lower)
         else
         {
-            if (m_Inventory != null)
+            // Switch weapon
+            if (CurrentState == PlayerState.Switching)
             {
-                m_Inventory.EquipWeapon(m_WeaponIdx);
+                if (m_Inventory != null)
+                {
+                    m_Inventory.EquipWeapon(m_WeaponIdx);
+                }
+                m_IsHolster = false;
+                m_PlayerAnimator.SetHolster(false);
+                m_SwitchTimer = m_SwitchCoolDown;
             }
-            UpdateHandIK();
             CurrentState = PlayerState.Unequipped;
-            m_IsHolster = false;
-            m_PlayerAnimator.SetHolster(false);
-            m_SwitchTimer = m_SwitchCoolDown;
         }
         m_CurWeapon = m_Inventory.CurrentWeapon;
+        UpdateHandIK();
         if (OnWeaponSwitched != null)
             OnWeaponSwitched.Invoke(m_CurWeapon);
     }

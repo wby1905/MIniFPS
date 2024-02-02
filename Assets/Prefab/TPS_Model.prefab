@@ -347,6 +347,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7700386177777227999}
+  - component: {fileID: 8075214931406189321}
   m_Layer: 8
   m_Name: mixamorig:LeftHand
   m_TagString: Untagged
@@ -373,6 +374,24 @@ Transform:
   m_Father: {fileID: 6212259195962389477}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8075214931406189321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1044942368713032912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03ca45bb53dc94f478358a1b6475653d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ChainLength: 2
+  Target: {fileID: 0}
+  Pole: {fileID: 0}
+  Iterations: 10
+  Delta: 0.001
+  SnapBackStrength: 1
 --- !u!1 &1135067214864192193
 GameObject:
   m_ObjectHideFlags: 0
@@ -475,6 +494,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2978159682821305044}
+  - component: {fileID: 6334626455661668916}
   m_Layer: 8
   m_Name: mixamorig:RightHand
   m_TagString: Untagged
@@ -493,15 +513,33 @@ Transform:
   m_LocalPosition: {x: -1.7497949e-10, y: 0.24811964, z: 3.3936828e-10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 8337030806077730589}
   - {fileID: 4739045851627654074}
   - {fileID: 145816111836356343}
   - {fileID: 2333761399409689972}
   - {fileID: 5651267684929694224}
   - {fileID: 5033671493045836258}
-  - {fileID: 8337030806077730589}
   m_Father: {fileID: 1401321319932344500}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6334626455661668916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1535307426740953117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03ca45bb53dc94f478358a1b6475653d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ChainLength: 2
+  Target: {fileID: 0}
+  Pole: {fileID: 0}
+  Iterations: 10
+  Delta: 0.001
+  SnapBackStrength: 1
 --- !u!1 &1691605130504687377
 GameObject:
   m_ObjectHideFlags: 0
@@ -901,7 +939,7 @@ Transform:
   m_Children:
   - {fileID: 220261981000004887}
   m_Father: {fileID: 2978159682821305044}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3249093944173360168
 GameObject:
@@ -963,7 +1001,7 @@ Transform:
   m_Children:
   - {fileID: 8821498244892144192}
   m_Father: {fileID: 2978159682821305044}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3513288920391877605
 GameObject:
@@ -1136,8 +1174,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b627d0f286caca45ae25038a2a2d509, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IKFabric_Left: {fileID: 0}
-  IKFabric_Right: {fileID: 0}
+  IKFabric_Left: {fileID: 8075214931406189321}
+  IKFabric_Right: {fileID: 6334626455661668916}
 --- !u!1 &4466496090255802188
 GameObject:
   m_ObjectHideFlags: 0
@@ -1596,7 +1634,7 @@ Transform:
   m_Children:
   - {fileID: 7557337153946849808}
   m_Father: {fileID: 2978159682821305044}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6048442511322761640
 GameObject:
@@ -1657,7 +1695,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2978159682821305044}
-  m_RootOrder: 5
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 90}
 --- !u!1 &6255910971226794172
 GameObject:
@@ -1841,7 +1879,7 @@ Transform:
   m_Children:
   - {fileID: 7431519638858001816}
   m_Father: {fileID: 2978159682821305044}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6690012226923733654
 GameObject:
@@ -2208,7 +2246,7 @@ Transform:
   m_Children:
   - {fileID: 4830979729842156929}
   m_Father: {fileID: 2978159682821305044}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9093898170768372673
 GameObject:

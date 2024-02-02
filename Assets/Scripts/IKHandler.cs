@@ -8,6 +8,10 @@ public class IKHandler : MonoBehaviour
     {
         set
         {
+            if (value == null)
+                IKFabric_Left.enabled = false;
+            else
+                IKFabric_Left.enabled = true;
             if (IKFabric_Left != null)
                 IKFabric_Left.Target = value;
         }
@@ -25,6 +29,10 @@ public class IKHandler : MonoBehaviour
     {
         set
         {
+            if (value == null)
+                IKFabric_Right.enabled = false;
+            else
+                IKFabric_Right.enabled = true;
             if (IKFabric_Right != null)
                 IKFabric_Right.Target = value;
         }
