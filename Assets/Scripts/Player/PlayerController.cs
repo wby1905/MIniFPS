@@ -14,7 +14,7 @@ public class PlayerController : ActorController
     public bool IsCasting => CurrentState == PlayerState.CastingSkill;
     public bool IsEquipped => m_Inventory != null && m_Inventory.IsEquipped;
     protected bool CanSwitch => m_Inventory != null && IsIdle && m_SwitchTimer <= 0f;
-    protected bool CanFire => IsEquipped && (IsIdle || IsAiming || IsRunning);
+    protected bool CanFire => IsEquipped && (IsIdle || IsAiming);
     protected bool CanAim => IsEquipped && IsIdle;
     protected bool CanRun => IsIdle;
     protected bool CanReload => IsEquipped && IsIdle;
@@ -277,7 +277,7 @@ public class PlayerController : ActorController
         moveDir.y = 0;
         moveDir.Normalize();
 
-        var speed = m_IsRunning ? m_RunSpeed : m_GroundSpeed;
+        var speed = IsRunning ? m_RunSpeed : m_GroundSpeed;
         m_Velocity = moveDir * speed + m_Velocity.y * Vector3.up;
     }
 
@@ -421,9 +421,6 @@ public class PlayerController : ActorController
 
     void TryRunning()
     {
-        if (IsAiming)
-            StopAiming();
-
         if (!CanRun) return;
 
         m_PlayerAnimator.SetRunning(true);

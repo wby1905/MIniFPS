@@ -63,9 +63,6 @@ public class Inventory : ActorController
         if (m_Weapons[index] == null)
             return null;
 
-        if (WeaponSocket == null)
-            Debug.LogError("WeaponSocket is not assigned");
-
         if (m_CurIdx >= 0 && m_Weapons[m_CurIdx] != null)
         {
             m_Weapons[m_CurIdx].OnUnequip();
