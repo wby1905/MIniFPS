@@ -37,7 +37,6 @@ public class EnemyController : ActorController
     private float m_UpdateTimer = 0f;
 
     public static readonly int SpeedHash = Animator.StringToHash("Speed");
-    public static readonly int AttackStateHash = Animator.StringToHash("Attack");
 
     public override void Init(ActorBehaviour ab)
     {
@@ -169,7 +168,6 @@ public class EnemyController : ActorController
 
     public void Attack()
     {
-        // PlayAnim(AttackStateHash);
         if (m_SkillSystem != null)
         {
             var cd = m_SkillSystem.ReleaseSkill(0);

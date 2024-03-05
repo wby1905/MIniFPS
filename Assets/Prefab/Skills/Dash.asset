@@ -18,6 +18,8 @@ MonoBehaviour:
   cdTimer: 0
   castDistance: 10
   castAngle: {x: 0, y: 0, z: 0}
+  castOriginName: 
+  castOrigin: {fileID: 0}
   affectTags: []
   affectLayers:
     serializedVersion: 2
@@ -25,6 +27,7 @@ MonoBehaviour:
   targets: []
   impactTypes:
   - Move
+  impactOnce: 1
   value: 0
   duration: 0.1
   caster: {fileID: 0}

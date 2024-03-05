@@ -65,7 +65,7 @@ public class SkillManager : ActorController
     {
         if (data == null || data.skillPrefab == null) return;
         ActorBehaviour skillAb = WorldManager.Instantiate(data.skillPrefab, data.caster.transform, true);
-        Object.Destroy(skillAb.gameObject, data.duration + 0.05f);
+        Object.Destroy(skillAb.gameObject, data.duration + 0.01f);
 
         SkillDeployer deployer = skillAb.GetController<SkillDeployer>();
         if (deployer != null)

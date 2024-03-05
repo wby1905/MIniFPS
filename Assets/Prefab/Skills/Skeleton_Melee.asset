@@ -15,7 +15,7 @@ MonoBehaviour:
   skillName: Melee
   description: "\u9AB7\u9AC5\u5175\u8FD1\u6218"
   cooldown: 2
-  cdTimer: 1.5
+  cdTimer: 0.5
   castDistance: 1
   castAngle: {x: 0, y: -90, z: 0}
   castOriginName: WeaponSocket
@@ -28,8 +28,9 @@ MonoBehaviour:
   targets: []
   impactTypes:
   - Damage
+  impactOnce: 0
   value: 0
-  duration: 2
+  duration: 1.2
   caster: {fileID: 0}
   skillIndicator: {fileID: 0}
   skillPrefab: {fileID: 8457510107512738576, guid: 8495a217c4b1d1d4baef8473cef16021,

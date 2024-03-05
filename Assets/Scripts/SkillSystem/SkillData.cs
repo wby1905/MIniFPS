@@ -48,6 +48,7 @@ public class SkillData : ScriptableObject
     [HideInInspector]
     public Transform[] targets;
     public string[] impactTypes;
+    public bool impactOnce;
     public float value;
     public float duration;
     [HideInInspector]

@@ -9,6 +9,7 @@ public class StraightSelector : ISelector
     {
         List<Transform> targets = new List<Transform>();
         Vector3 originPos = origin.position;
+        //TODO 这里的旋转有一些问题
         // Quaternion rot = Quaternion.Euler(data.castAngle);
         Vector3 direction = origin.forward;
 

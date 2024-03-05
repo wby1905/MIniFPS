@@ -32,19 +32,21 @@ public class SweepDeployer : SkillDeployer
             m_Duration += Time.deltaTime;
             if (m_PulseTimer >= INTERVAL)
             {
-                m_Targets.Clear();
                 m_PulseTimer = 0;
                 CalculateTargets();
-                foreach (var target in SkillData.targets)
+                if (SkillData.impactOnce)
                 {
-                    var id = target.root.GetHashCode();
-                    if (m_Impacted.Contains(id))
+                    m_Targets.Clear();
+                    foreach (var target in SkillData.targets)
                     {
-                        continue;
+                        var id = target.root.GetHashCode();
+                        if (m_Impacted.Contains(id))
+                        {
+                            continue;
+                        }
+                        m_Impacted.Add(id);
+                        m_Targets.Add(target);
                     }
-                    m_Impacted.Add(id);
-                    m_Targets.Add(target);
-                    Debug.Log(id + " " + target.root.name);
                 }
                 ApplyEffects();
             }
