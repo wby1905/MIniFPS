@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eff8673c7bdd9574baaf21322cfa1618, type: 3}
+  m_Name: Skeleton_Melee
+  m_EditorClassIdentifier: 
+  skillName: Melee
+  description: "\u9AB7\u9AC5\u5175\u8FD1\u6218"
+  cooldown: 2
+  cdTimer: 1.5
+  castDistance: 1
+  castAngle: {x: 0, y: -90, z: 0}
+  castOriginName: WeaponSocket
+  castOrigin: {fileID: 0}
+  affectTags:
+  - Player
+  affectLayers:
+    serializedVersion: 2
+    m_Bits: 2816
+  targets: []
+  impactTypes:
+  - Damage
+  value: 0
+  duration: 2
+  caster: {fileID: 0}
+  skillIndicator: {fileID: 0}
+  skillPrefab: {fileID: 8457510107512738576, guid: 8495a217c4b1d1d4baef8473cef16021,
+    type: 3}
+  animationNames:
+  - Attack
+  skillType: 1
+  selectorType: 0
+  skillIcon: {fileID: 0}
+  destroyType: 1
+  skillState: 2

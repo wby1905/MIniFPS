@@ -13,6 +13,13 @@ public class SkillManager : ActorController
         if (pb != null)
         {
             skills = pb.skills;
+            return;
+        }
+
+        EnemyBehaviour eb = ab as EnemyBehaviour;
+        if (eb != null)
+        {
+            skills = eb.skills;
         }
     }
 
@@ -78,7 +85,6 @@ public class SkillManager : ActorController
         {
             yield return new WaitForSeconds(0.5f);
             data.cdTimer -= 0.5f;
-            Debug.Log(data.cdTimer);
         }
         data.skillState = SkillState.Idle;
     }

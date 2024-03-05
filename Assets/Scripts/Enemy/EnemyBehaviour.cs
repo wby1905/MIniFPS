@@ -12,10 +12,9 @@ public class EnemyBehaviour : ActorBehaviour
 
     [Header("Combat")]
     public float AttackRange = 2f;
-    public float AttackCooldown = 2f;
     public Vector3[] PatrolPoints;
     public float WaitTime = 3f;
-    public SkillData[] Skills;
+    public SkillData[] skills;
     public float UpdateRate = 0.5f;
 
 }

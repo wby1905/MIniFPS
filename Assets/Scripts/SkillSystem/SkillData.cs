@@ -41,6 +41,8 @@ public class SkillData : ScriptableObject
     public float castDistance;
     public Vector3 castAngle;
     public string castOriginName;
+    [HideInInspector]
+    public Transform castOrigin;
     public string[] affectTags;
     public LayerMask affectLayers;
     [HideInInspector]

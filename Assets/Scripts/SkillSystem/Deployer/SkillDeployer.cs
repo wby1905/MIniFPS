@@ -12,7 +12,9 @@ public abstract class SkillDeployer : ActorController
     }
 
     protected ISelector m_Selector;
-    private IImpactor[] m_Impactors;
+    protected IImpactor[] m_Impactors;
+
+    protected Transform origin;
 
     private void InitDeployer()
     {
@@ -25,11 +27,21 @@ public abstract class SkillDeployer : ActorController
             Type impactorType = Type.GetType(m_SkillData.impactTypes[i] + "Impactor");
             m_Impactors[i] = Activator.CreateInstance(impactorType) as IImpactor;
         }
+
+        if (m_SkillData.castOriginName != null) origin = m_SkillData.caster.FindChild(m_SkillData.castOriginName);
+        if (origin == null)
+        {
+            origin = transform;
+        }
+        m_SkillData.castOrigin = origin;
+        transform.parent = origin;
+        transform.localPosition = Vector3.zero;
+        transform.localRotation = Quaternion.Euler(m_SkillData.castAngle);
     }
 
     public void CalculateTargets()
     {
-        SkillData.targets = m_Selector.SelectTarget(m_SkillData, transform);
+        SkillData.targets = m_Selector.SelectTarget(m_SkillData, origin);
     }
 
     public void ApplyEffects()

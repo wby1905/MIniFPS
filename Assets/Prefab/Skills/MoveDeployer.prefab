@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1366747967339119401}
   - component: {fileID: 4348464203803340867}
   m_Layer: 0
-  m_Name: Dash
+  m_Name: MoveDeployer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

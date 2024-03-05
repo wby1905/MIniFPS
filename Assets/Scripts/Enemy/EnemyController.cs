@@ -26,16 +26,12 @@ public class EnemyController : ActorController
     * Combat parameters
     */
     private float m_AttackRange;
-    private float m_AttackCooldown = 2f;
     private float m_AttackTimer = 0f;
 
     private Vector3[] m_PatrolPoints;
     private int m_CurPatrolIdx = 0;
     private float m_WaitTime = 3f;
     private float m_WaitTimer = 0f;
-
-    private SkillData[] m_Skills;
-
 
     private float m_UpdateRate = 0.5f;
     private float m_UpdateTimer = 0f;
@@ -53,10 +49,8 @@ public class EnemyController : ActorController
         m_FOV = eb.FOV;
         m_LayerMask = eb.LayerMask;
         m_AttackRange = eb.AttackRange;
-        m_AttackCooldown = eb.AttackCooldown;
         m_PatrolPoints = eb.PatrolPoints;
         m_WaitTime = eb.WaitTime;
-        m_Skills = eb.Skills;
         m_UpdateRate = eb.UpdateRate;
     }
 
@@ -106,7 +100,6 @@ public class EnemyController : ActorController
             m_UpdateTimer = m_UpdateRate;
             UpdateTarget();
             m_CurrentState = m_CurrentState.Update(this);
-            Debug.Log(CurrentState);
         }
 
     }
@@ -176,12 +169,12 @@ public class EnemyController : ActorController
 
     public void Attack()
     {
-        PlayAnim(AttackStateHash);
+        // PlayAnim(AttackStateHash);
         if (m_SkillSystem != null)
         {
-            m_SkillSystem.ReleaseSkill(0);
+            var cd = m_SkillSystem.ReleaseSkill(0);
+            m_AttackTimer = cd;
         }
-        m_AttackTimer = m_AttackCooldown;
     }
 
     public void StartChase()
