@@ -40,6 +40,7 @@ public class SkillData : ScriptableObject
     public float cdTimer;
     public float castDistance;
     public Vector3 castAngle;
+    public string castOriginName;
     public string[] affectTags;
     public LayerMask affectLayers;
     [HideInInspector]

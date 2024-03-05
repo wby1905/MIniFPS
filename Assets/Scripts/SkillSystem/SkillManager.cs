@@ -19,6 +19,7 @@ public class SkillManager : ActorController
     protected override void Awake()
     {
         base.Awake();
+        if (skills == null) return;
         foreach (var skill in skills)
         {
             InitSkill(skill);
@@ -33,7 +34,7 @@ public class SkillManager : ActorController
 
     public SkillData PrepareSkill(int index)
     {
-        if (index < 0 || index >= skills.Length) return null;
+        if (skills == null || index < 0 || index >= skills.Length) return null;
         var skill = skills[index];
 
         if (skill != null && skill.skillState == SkillState.Idle)

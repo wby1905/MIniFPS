@@ -43,6 +43,18 @@ public class WorldManager : Singleton<WorldManager>
                 InvokeActor(player);
                 playerController = player.GetController<PlayerController>();
             }
+
+            // TODO: 暂时在这里实例化enemy
+            var enemies = GameObject.FindGameObjectsWithTag("Enemy");
+            foreach (var enemy in enemies)
+            {
+                if (enemy != null)
+                {
+                    var e = enemy.GetComponent<EnemyBehaviour>();
+                    InitActor(e);
+                    InvokeActor(e);
+                }
+            }
         }
     }
 
