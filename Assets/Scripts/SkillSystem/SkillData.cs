@@ -47,6 +47,8 @@ public class SkillData : ScriptableObject
     public LayerMask affectLayers;
     [HideInInspector]
     public Transform[] targets;
+    [HideInInspector]
+    public Vector3[] targetPositions;
     public string[] impactTypes;
     public bool impactOnce;
     public float value;
@@ -60,6 +62,7 @@ public class SkillData : ScriptableObject
     public SelectorType selectorType;
     public Sprite skillIcon;
     public DestroyType destroyType;
+    public AudioClip castFx;
     [HideInInspector]
     public SkillState skillState;
 }

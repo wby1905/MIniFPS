@@ -7,11 +7,12 @@ public class StraightSelector : ISelector
 
     public Transform[] SelectTarget(SkillData data, Transform origin)
     {
-        List<Transform> targets = new List<Transform>();
+        HashSet<Transform> targets = new HashSet<Transform>();
+        List<Vector3> targetPositions = new List<Vector3>();
+
         Vector3 originPos = origin.position;
-        //TODO 这里的旋转有一些问题
-        // Quaternion rot = Quaternion.Euler(data.castAngle);
-        Vector3 direction = origin.forward;
+        Quaternion rot = Quaternion.Euler(data.castAngle);
+        Vector3 direction = rot * origin.forward;
 
 #if UNITY_EDITOR
         Debug.DrawRay(originPos, direction * data.castDistance, Color.red, 1);
@@ -26,13 +27,21 @@ public class StraightSelector : ISelector
                 data.affectTags.Any(tag => hit.collider.tag == tag)
                 )
             {
+                if (hit.collider.gameObject == origin.gameObject)
+                {
+                    continue;
+                }
                 targets.Add(hit.collider.transform);
+                Debug.Log(targets.Last().name);
+                targetPositions.Add(hit.point);
                 if (data.skillType == SkillType.Single)
                 {
                     break;
                 }
             }
         }
+
+        data.targetPositions = targetPositions.ToArray();
         return targets.ToArray();
     }
 

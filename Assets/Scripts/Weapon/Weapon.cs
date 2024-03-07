@@ -30,6 +30,7 @@ public class Weapon : ActorController
     private readonly int m_FireStateHash = Animator.StringToHash("Fire");
     private readonly int m_ReloadStateHash = Animator.StringToHash("Reload");
 
+    public ActorBehaviour Owner { get; set; }
 
     public bool IsAutomatic => m_IsAutomatic;
     public int MaxAmmo => m_MaxAmmo;

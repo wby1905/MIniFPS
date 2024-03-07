@@ -244,15 +244,15 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4603405358940555788}
-  m_LocalRotation: {x: 0, y: -0.99502605, z: 0, w: 0.09961498}
-  m_LocalPosition: {x: 0, y: 0, z: -1.588}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4603405358941050450}
   - {fileID: 4603405358941050386}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: -168.56601, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &4603405358933309874
 Animator:
   serializedVersion: 3
@@ -329,6 +329,7 @@ MonoBehaviour:
   - SkillManager
   - SkillSystem
   TargetTag: Player
+  EyeBone: Bip001 Head
   MaxSightDistance: 10
   FOV: 45
   LayerMask:

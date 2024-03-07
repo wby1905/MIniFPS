@@ -71,6 +71,10 @@ public class SkillManager : ActorController
         if (deployer != null)
         {
             deployer.SkillData = data;
+            if (data.castFx)
+            {
+                AudioManager.Instance.PlayOneShot(data.castFx, 0.5f, 1f, data.castOrigin.position);
+            }
             deployer.DeploySkill();
             data.skillState = SkillState.Cooldown;
             actorBehaviour.StartCoroutine(CoolDown(data));

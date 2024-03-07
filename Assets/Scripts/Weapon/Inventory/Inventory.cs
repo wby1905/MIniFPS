@@ -84,4 +84,12 @@ public class Inventory : ActorController
         }
     }
 
+    public virtual void SetOwner(ActorBehaviour owner)
+    {
+        foreach (var weapon in m_Weapons)
+        {
+            weapon.Owner = owner;
+        }
+    }
+
 }

@@ -31,6 +31,8 @@ public class PlayerInventory : Inventory
         if (m_CameraManager != null)
             m_CameraManager.OnSwitchCam += OnSwitchCam;
 
+        SetOwner(actorBehaviour);
+
     }
 
     protected override void OnDestroy()

@@ -49,6 +49,8 @@ public class ProjectileWeapon : Weapon
             Projectile projectile = m_ProjectilePool.Get();
             if (projectile != null)
             {
+                if (Owner != null) Physics.IgnoreCollision(projectile.GetComponent<Collider>(), Owner.GetComponent<Collider>());
+                else { Debug.LogWarning("Owner is null"); }
                 projectile.ProjectilePool = m_ProjectilePool;
                 projectile.Fire(m_Muzzle.Socket.position, aimPoint - m_Muzzle.transform.position);
             }

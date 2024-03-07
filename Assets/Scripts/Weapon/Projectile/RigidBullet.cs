@@ -6,6 +6,7 @@ public class RigidBullet : Projectile
     protected float m_InitialSpeed = 10f;
     protected float m_LifeTime = 5f;
     protected bool m_UseGravity = true;
+    protected bool m_IsSpawnDecal = true;
 
     protected Rigidbody m_Rigidbody;
     protected Collider m_Collider;
@@ -22,6 +23,7 @@ public class RigidBullet : Projectile
         m_InitialSpeed = bb.InitialSpeed;
         m_LifeTime = bb.LifeTime;
         m_UseGravity = bb.UseGravity;
+        m_IsSpawnDecal = bb.IsSpawnDecal;
     }
 
     protected override void Awake()
@@ -59,12 +61,16 @@ public class RigidBullet : Projectile
     public override void OnCollisionEnter(Collision other)
     {
         base.OnCollisionEnter(other);
-        Vector3 impactPoint = other.contacts[0].point;
-        Vector3 impactNormal = other.contacts[0].normal;
-        DecalManager.Instance.SpawnDecal(DecalType.BulletHole,
-            impactPoint + impactNormal * 0.01f,
-            Quaternion.LookRotation(impactNormal, Random.insideUnitSphere)
-         );
+
+        if (m_IsSpawnDecal)
+        {
+            Vector3 impactPoint = other.contacts[0].point;
+            Vector3 impactNormal = other.contacts[0].normal;
+            DecalManager.Instance.SpawnDecal(DecalType.BulletHole,
+                impactPoint + impactNormal * 0.01f,
+                Quaternion.LookRotation(impactNormal, Random.insideUnitSphere)
+             );
+        }
 
         float volume = Random.Range(0.1f, 0.3f);
         float pitch = Random.Range(0.8f, 1.2f);

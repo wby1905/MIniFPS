@@ -17,6 +17,7 @@ public class EnemyController : ActorController
     /**
     * Sight
     */
+    private Transform m_EyeBone;
     private float m_MaxSightDistance = 10f;
     private float m_FOV = 45f;
     private LayerMask m_LayerMask;
@@ -25,6 +26,8 @@ public class EnemyController : ActorController
     /**
     * Combat parameters
     */
+    private Transform m_WeaponSocket;
+
     private float m_AttackRange;
     private float m_AttackTimer = 0f;
 
@@ -36,7 +39,9 @@ public class EnemyController : ActorController
     private float m_UpdateRate = 0.5f;
     private float m_UpdateTimer = 0f;
 
-    public static readonly int SpeedHash = Animator.StringToHash("Speed");
+    public static readonly int VxHash = Animator.StringToHash("VelocityX");
+    public static readonly int VzHash = Animator.StringToHash("VelocityZ");
+
 
     public override void Init(ActorBehaviour ab)
     {
@@ -44,9 +49,11 @@ public class EnemyController : ActorController
         EnemyBehaviour eb = ab as EnemyBehaviour;
         if (eb == null) return;
         TargetTag = eb.TargetTag;
+        m_EyeBone = eb.FindChild(eb.EyeBone);
         m_MaxSightDistance = eb.MaxSightDistance;
         m_FOV = eb.FOV;
         m_LayerMask = eb.LayerMask;
+        m_WeaponSocket = eb.FindChild(eb.WeaponSocket);
         m_AttackRange = eb.AttackRange;
         m_PatrolPoints = eb.PatrolPoints;
         m_WaitTime = eb.WaitTime;
@@ -76,7 +83,8 @@ public class EnemyController : ActorController
             {
                 UpdateTarget(); // 有target则无需间歇式更新
             }
-            m_Animator.SetFloat(SpeedHash, m_NavMeshAgent.velocity.magnitude);
+            m_Animator.SetFloat(VxHash, m_NavMeshAgent.velocity.x);
+            m_Animator.SetFloat(VzHash, m_NavMeshAgent.velocity.z);
             m_CharacterController.Move(m_NavMeshAgent.velocity * Time.deltaTime);
         }
 
@@ -116,7 +124,7 @@ public class EnemyController : ActorController
             }
         }
 
-        int hits = Physics.OverlapSphereNonAlloc(transform.position, m_MaxSightDistance, m_Colliders, m_LayerMask);
+        int hits = Physics.OverlapSphereNonAlloc(m_EyeBone.position, m_MaxSightDistance, m_Colliders, m_LayerMask);
         for (int i = 0; i < hits; i++)
         {
             if (m_Colliders[i].CompareTag(TargetTag))
@@ -133,15 +141,15 @@ public class EnemyController : ActorController
     public bool IsInSight(Collider collider)
     {
         // 简单的视线检测
-        float height = collider.bounds.size.y;
-        Vector3 direction = collider.transform.position - transform.position + Vector3.up * height * 0.5f;
+        var height = collider.bounds.size.y;
+        Vector3 direction = collider.transform.position - m_EyeBone.position + Vector3.up * height * 0.5f;
         float angle = Vector3.Angle(direction, transform.forward);
         if (angle < m_FOV)
         {
             RaycastHit hit;
-            if (Physics.Raycast(transform.position, direction, out hit, m_MaxSightDistance, m_LayerMask))
+            if (Physics.Raycast(m_EyeBone.position, direction, out hit, m_MaxSightDistance))
             {
-                if (hit.collider == collider)
+                if (hit.collider.transform.root == collider.transform.root)
                 {
                     return true;
                 }
@@ -158,6 +166,7 @@ public class EnemyController : ActorController
     {
         return Target != null &&
          Vector3.Distance(transform.position, Target.transform.position) <= m_AttackRange &&
+         IsInSight(Target.GetComponent<Collider>()) &&
          m_AttackTimer <= 0f;
     }
 
@@ -170,6 +179,8 @@ public class EnemyController : ActorController
     {
         if (m_SkillSystem != null)
         {
+            Vector3 direction = Target.transform.position - m_WeaponSocket.position;
+            transform.forward = direction;
             var cd = m_SkillSystem.ReleaseSkill(0);
             m_AttackTimer = cd;
         }
@@ -177,6 +188,14 @@ public class EnemyController : ActorController
 
     public void StartChase()
     {
+        // 在攻击距离内不用追
+        transform.LookAt(Target.transform);
+        if (Vector3.Distance(transform.position, Target.transform.position) <= m_AttackRange &&
+        IsInSight(Target.GetComponent<Collider>()))
+        {
+            ResetNav();
+            return;
+        }
         m_NavMeshAgent.SetDestination(Target.transform.position);
     }
 
@@ -197,7 +216,8 @@ public class EnemyController : ActorController
     public void ResetNav()
     {
         m_NavMeshAgent.ResetPath();
-        m_Animator.SetFloat(SpeedHash, 0f);
+        m_Animator.SetFloat(VxHash, 0f);
+        m_Animator.SetFloat(VzHash, 0f);
     }
 
 
